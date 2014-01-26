@@ -1,0 +1,1 @@
+{"bedYLengthLineEdit": "49", "bedXOffsetLineEdit": "0.3121", "maxZTravelLineEdit": "6", "bedXLengthLineEdit": "97", "bedYOffsetLineEdit": "0.8574", "maxYTravelLineEdit": "51", "maxSpindleSpeedLineEdit": "24000", "maxXTravelLineEdit": "99"}
