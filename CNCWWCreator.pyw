@@ -2,7 +2,7 @@
 """
 Created on Mon Jan 20 18:02:18 2014
 
-@author: Dirk
+@author: Dirk Van Essendelft
 """
 
 import sys, os, csv, json
