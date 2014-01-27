@@ -5,6 +5,9 @@ Created on Sun Jan 26 20:07:19 2014
 @author: Dirk Van Essendelft
 """
 
+import datetime
+from utilities import utilities
+
 class gMotion():
     '''
     This class contains the common g-code generation functions.
@@ -18,7 +21,9 @@ class gMotion():
     The table datum is the position of the desired datum relative to the corner
     of the bed of the mill
     '''
-    def __init__(self,Table_Offset = (0,0,0), Table_Datum = (0,0,0)):
+    def __init__(self,Table_Offset = (0,0,0), Table_Datum = (0,0,0),parent = None):
+        self.parent = parent
+        self.util = utilities()
         self._Table_Offset = Table_Offset
         self._Table_Datum = Table_Datum
         self._g_rapid = 'G0'
@@ -27,6 +32,10 @@ class gMotion():
         self._x = 'X'
         self._y = 'Y'
         self._z = 'Z'
+        self._feed = 'F'
+        self._speed = 'S'
+        self._preamble = self.util.readTextFile('Preamble.txt')
+        self._postamble = self.util.readTextFile('Postamble.txt')
     
     def rapid(self,XYZ,safeZ = None):
         '''
@@ -52,9 +61,40 @@ class gMotion():
         return gcode
         
         
-    def lineFeed(self,XYZ):
+    def addPreamble(self):
+        gcode = '(Begin Preamble)' + self._new_line
+        gcode += '(Created by CNC Woodworker g-Code Creator)' + self._new_line
+        gcode += '(CNC Woodworker written by Dirk Van Essendelft)' + self._new_line
+        gcode += '(g-code created at ' + datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y") + ')' + self._new_line
+        gcode += self._preamble + self._new_line
+        gcode += '(End Preamble)' + self._new_line
+        return gcode
+        
+    def addPostamble(self):
+        gcode = '(Begin Postamble)' + self._new_line
+        gcode += self._postamble + self._new_line
+        gcode += '(End Postamble)' + self._new_line
+        return gcode
+        
+    def lineFeed(self,XYZ,feedrate = None,speed = None):
         XYZ = self.__translateXYZ(XYZ)
-        return self._g_feed + self.__codeXYZ(XYZ) + self._new_line
+        gcode = self._g_feed + self.__codeXYZ(XYZ)
+        if feedrate != None:
+            gcode += self._feed + str(feedrate)
+            
+        if speed != None:
+            gcode += self._speed + str(speed)
+            
+        gcode += self._new_line
+        return gcode
+        
+    def addFeedandSpeed(self,feedrate = None, speed = None):
+        gcode = ''
+        if feedrate != None:
+            gcode += self._feed + str(feedrate)
+        if speed != None:
+            gcode += self._speed + str(speed)
+        return gcode
         
     def __translateXYZ(self,XYZ):
         '''

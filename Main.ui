@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>862</width>
+    <width>1031</width>
     <height>592</height>
    </rect>
   </property>
@@ -90,34 +90,24 @@
                       <widget class="QLineEdit" name="overTravelLineEdit"/>
                      </item>
                      <item row="2" column="0">
-                      <widget class="QLabel" name="feedRateLabel">
-                       <property name="text">
-                        <string>Feed Rate</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <widget class="QLineEdit" name="feedRateLineEdit"/>
-                     </item>
-                     <item row="3" column="0">
-                      <widget class="QLabel" name="spindleSpeedLabel">
-                       <property name="text">
-                        <string>Spindle Speed</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="1">
-                      <widget class="QLineEdit" name="spindleSpeedLineEdit"/>
-                     </item>
-                     <item row="4" column="0">
                       <widget class="QLabel" name="safeZHeightLabel">
                        <property name="text">
                         <string>Safe Z Height</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="4" column="1">
+                     <item row="2" column="1">
                       <widget class="QLineEdit" name="safeZHeightLineEdit"/>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="zAxisOffsetLabel_2">
+                       <property name="text">
+                        <string>Z Axis Offset</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QLineEdit" name="zAxisOffsetLineEdit_2"/>
                      </item>
                     </layout>
                    </item>
@@ -151,38 +141,75 @@
                       <widget class="QLineEdit" name="cutOffsetLineEdit"/>
                      </item>
                      <item row="2" column="0">
+                      <widget class="QLabel" name="cutPassSpindleSpeedLabel">
+                       <property name="text">
+                        <string>Cut Pass Spindle Speed</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLineEdit" name="cutPassSpindleSpeedLineEdit"/>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="cutPassFeedRateLabel">
+                       <property name="text">
+                        <string>Cut Pass Feed Rate</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QLineEdit" name="cutPassFeedRateLineEdit"/>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="0" column="2">
+                  <layout class="QGridLayout" name="gridLayout_10">
+                   <item row="0" column="0">
+                    <layout class="QFormLayout" name="formLayout_4">
+                     <property name="fieldGrowthPolicy">
+                      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                     </property>
+                     <item row="0" column="0">
                       <widget class="QLabel" name="finalPassesLabel">
                        <property name="text">
                         <string>Final Passes</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="2" column="1">
-                      <widget class="QSpinBox" name="finalPassesSpinBox">
-                       <property name="minimum">
-                        <number>1</number>
-                       </property>
-                      </widget>
+                     <item row="0" column="1">
+                      <widget class="QSpinBox" name="finalPassesSpinBox"/>
                      </item>
-                     <item row="4" column="0">
-                      <widget class="QLabel" name="zAxisOffsetLabel">
-                       <property name="text">
-                        <string>Z Axis Offset</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="1">
-                      <widget class="QLineEdit" name="zAxisOffsetLineEdit"/>
-                     </item>
-                     <item row="3" column="0">
+                     <item row="1" column="0">
                       <widget class="QLabel" name="finalOffsetLabel">
                        <property name="text">
                         <string>Final Offset</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="3" column="1">
+                     <item row="1" column="1">
                       <widget class="QLineEdit" name="finalOffsetLineEdit"/>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="finalPassSpindleSpeedLabel">
+                       <property name="text">
+                        <string>Final Pass Spindle Speed</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLineEdit" name="finalPassSpindleSpeedLineEdit"/>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="finalPassFeedRateLabel">
+                       <property name="text">
+                        <string>Final Pass Feed Rate</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QLineEdit" name="finalPassFeedRateLineEdit"/>
                      </item>
                     </layout>
                    </item>
@@ -361,7 +388,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>862</width>
+     <width>1031</width>
      <height>21</height>
     </rect>
    </property>
@@ -413,14 +440,16 @@
  <tabstops>
   <tabstop>comboBox_Jointer_SelectXYAxis</tabstop>
   <tabstop>overTravelLineEdit</tabstop>
-  <tabstop>feedRateLineEdit</tabstop>
-  <tabstop>spindleSpeedLineEdit</tabstop>
   <tabstop>safeZHeightLineEdit</tabstop>
+  <tabstop>zAxisOffsetLineEdit_2</tabstop>
   <tabstop>cutPassesSpinBox</tabstop>
   <tabstop>cutOffsetLineEdit</tabstop>
+  <tabstop>cutPassSpindleSpeedLineEdit</tabstop>
+  <tabstop>cutPassFeedRateLineEdit</tabstop>
   <tabstop>finalPassesSpinBox</tabstop>
   <tabstop>finalOffsetLineEdit</tabstop>
-  <tabstop>zAxisOffsetLineEdit</tabstop>
+  <tabstop>finalPassSpindleSpeedLineEdit</tabstop>
+  <tabstop>finalPassFeedRateLineEdit</tabstop>
   <tabstop>materialLengthLineEdit</tabstop>
   <tabstop>materialWidthLineEdit</tabstop>
   <tabstop>materialThicknessLineEdit</tabstop>
@@ -432,7 +461,6 @@
   <tabstop>loadToolpushButton</tabstop>
   <tabstop>generateGCodePushButton</tabstop>
   <tabstop>moduleTabWidget</tabstop>
-  <tabstop>textBrowser_Jointer_Setup</tabstop>
  </tabstops>
  <resources/>
  <connections>

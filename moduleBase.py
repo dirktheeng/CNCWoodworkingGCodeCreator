@@ -67,11 +67,12 @@ class moduleBase():
         This function handles producing the g-code for all modules
         '''
         self.buildModuleDict()
-        machineSettings = self.parent.vars.machineSettings
-        gridSettings = self.parent.vars.gridSettings
+        machineSettings = self.util.getSettings('machineSettings.txt')
+        gridSettings = self.util.getSettings('gridSettings.txt')
         Table_Offset = (float(machineSettings["bedXOffsetLineEdit"]),float(machineSettings["bedYOffsetLineEdit"]),0)
-        motion = gMotion(Table_Offset=Table_Offset)
+        motion = gMotion(Table_Offset=Table_Offset, parent = self)
         gcode = ''
+        gcode = motion.addPreamble()
         for k,v in self.moduleDict.items():
             k = k.split('LineEdit')[0]
             k = k.split('SpinBox')[0]
@@ -89,7 +90,7 @@ class moduleBase():
                 cutPassDZ = (materialThickness -  zAxisOffset)/ (cutPasses)
                 if SelectXYAxis == 0:
                     startXYZ_cut = [startAxiDist,cutOffset - toolDiameter/2.0,zAxisOffset]
-                    endXYZ_cut = [finishAxiDist,cutlOffset - toolDiameter/2.0,zAxisOffset]
+                    endXYZ_cut = [finishAxiDist,cutOffset - toolDiameter/2.0,zAxisOffset]
                 else:
                     startXYZ_cut = [cutOffset - toolDiameter/2.0,finishAxiDist,zAxisOffset]
                     endXYZ_cut = [cutOffset - toolDiameter/2.0,startAxiDist,zAxisOffset]
@@ -98,6 +99,7 @@ class moduleBase():
                     zCutHeight = materialThickness - cutPassDZ*(i+1)
                     startXYZ_cut[2] = zCutHeight
                     endXYZ_cut[2] = zCutHeight
+                    gcode += motion.addFeedandSpeed(feedrate = cutPassFeedRate, speed = cutPassSpindleSpeed)
                     gcode += motion.rapid(startXYZ_cut,safeZ = safeZHeight)
                     gcode += motion.lineFeed(endXYZ_cut)
                     
@@ -109,9 +111,12 @@ class moduleBase():
                 startXYZ_final = [finalOffset - toolDiameter/2.0,finishAxiDist,zAxisOffset]
                 endXYZ_final = [finalOffset - toolDiameter/2.0,startAxiDist,zAxisOffset]
             
+            gcode += motion.addFeedandSpeed(feedrate = finalPassFeedRate, speed = finalPassSpindleSpeed)
             for i in range(int(finalPasses)):
                 gcode += motion.rapid(startXYZ_final,safeZ = safeZHeight)
                 gcode += motion.lineFeed(endXYZ_final)
+                
+            gcode += motion.addPostamble()
             
             print gcode
             

@@ -11,7 +11,7 @@ from main import Ui_MainWindow
 from utilities import utilities
 from machineSettings import machineSettingsDialog
 from gridSettings import gridSettingsDialog
-from prepostambel import prePostAmbleDialog
+from prepostamble import prePostAmbleDialog
 from moduleBase import moduleBase
 
 

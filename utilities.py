@@ -78,24 +78,21 @@ class utilities():
         with open(fileName,'w') as outfile:
             json.dump(settingsDict, outfile)
             
-    def dumpTextEdit(self,filename,QTextObject):
+    def dumpTextEdit(self,fileName,QTextObject):
         text = QTextObject.toPlainText()
-        with open(filename,'w') as txtFile:
-            txtFile.write(text)
+        self.saveTextFile(fileName,text)
             
-    def loadTextEdit(self,filename,QTextObject):
-        with open(filename,'r') as txtFile:
-            text = txtFile.read()
+    def loadTextEdit(self,fileName,QTextObject):
+        text = self.readTextFile(fileName)
         QTextObject.setPlainText(text)
             
     def getSettings(self,fileName):
         try:
-            with open(fileName,'r') as settings:
-                jdict = json.load(settings)
-                strDict = {}
-                for k,v in jdict.items():
-                    strDict[str(k)] = str(v)
-                return strDict
+            jdict = self.readJSONFile(fileName)
+            strDict = {}
+            for k,v in jdict.items():
+                strDict[str(k)] = str(v)
+            return strDict
         except:
             return None
             
@@ -105,3 +102,19 @@ class utilities():
         for item in listLineEdit:
             cmd = 'self.parent.ui.'+item+'.setValidator(QtGui.QDoubleValidator())'
             exec(cmd)
+            
+    def readTextFile(self,fileName):
+        with open(fileName,'r') as txtFile:
+            txt = txtFile.read()
+        return txt
+        
+    def saveTextFile(self,fileName,txt):
+        with open(fileName,'w') as txtFile:
+            txtFile.write(txt)
+            
+    def readJSONFile(self,fileName):
+        with open(fileName,'r') as settings:
+            jsonDict = json.load(settings)
+        return jsonDict
+            
+        
