@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Main.ui'
 #
-# Created: Sat Jan 25 20:09:20 2014
+# Created: Sun Jan 26 19:32:57 2014
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -242,9 +242,15 @@ class Ui_MainWindow(object):
         self.actionMachine.setObjectName(_fromUtf8("actionMachine"))
         self.actionGrid = QtGui.QAction(MainWindow)
         self.actionGrid.setObjectName(_fromUtf8("actionGrid"))
+        self.actionPreamble = QtGui.QAction(MainWindow)
+        self.actionPreamble.setObjectName(_fromUtf8("actionPreamble"))
+        self.actionPostamble = QtGui.QAction(MainWindow)
+        self.actionPostamble.setObjectName(_fromUtf8("actionPostamble"))
         self.menuFile.addAction(self.actionExit)
         self.menuSettings.addAction(self.actionMachine)
         self.menuSettings.addAction(self.actionGrid)
+        self.menuSettings.addAction(self.actionPreamble)
+        self.menuSettings.addAction(self.actionPostamble)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuSettings.menuAction())
 
@@ -306,4 +312,6 @@ class Ui_MainWindow(object):
         self.actionExit.setText(_translate("MainWindow", "Exit", None))
         self.actionMachine.setText(_translate("MainWindow", "Machine", None))
         self.actionGrid.setText(_translate("MainWindow", "Grid", None))
+        self.actionPreamble.setText(_translate("MainWindow", "Preamble", None))
+        self.actionPostamble.setText(_translate("MainWindow", "Postamble", None))
 

@@ -377,6 +377,8 @@
     </property>
     <addaction name="actionMachine"/>
     <addaction name="actionGrid"/>
+    <addaction name="actionPreamble"/>
+    <addaction name="actionPostamble"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuSettings"/>
@@ -395,6 +397,16 @@
   <action name="actionGrid">
    <property name="text">
     <string>Grid</string>
+   </property>
+  </action>
+  <action name="actionPreamble">
+   <property name="text">
+    <string>Preamble</string>
+   </property>
+  </action>
+  <action name="actionPostamble">
+   <property name="text">
+    <string>Postamble</string>
    </property>
   </action>
  </widget>
