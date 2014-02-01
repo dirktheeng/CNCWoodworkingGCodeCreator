@@ -70,6 +70,7 @@ class moduleBase():
         machineSettings = self.util.getSettings('machineSettings.txt')
         gridSettings = self.util.getSettings('gridSettings.txt')
         Table_Offset = (float(machineSettings["bedXOffsetLineEdit"]),float(machineSettings["bedYOffsetLineEdit"]),0)
+        spindleOn = False
         motion = gMotion(Table_Offset=Table_Offset, parent = self)
         gcode = ''
         gcode = motion.addPreamble()
@@ -80,11 +81,11 @@ class moduleBase():
                 k = k.split("_"+self.name+"_")[1]
             cmd = k + " = float(" + str(v) + ')'
             print k, v
-            exec(cmd)  
+            exec(cmd)
+        homePosition = [float(self.parent.vars.machineSettings['bedXLengthLineEdit']),float(self.parent.vars.machineSettings['bedYLengthLineEdit']),safeZHeight]
         if self.name == 'Jointer':
             startAxiDist = distFromOrigin + materialLength + overTravel
             finishAxiDist = distFromOrigin - overTravel
-            
             cutPasses = int(cutPasses)
             if cutPasses > 0:
                 cutPassDZ = (materialThickness -  zAxisOffset)/ (cutPasses)
@@ -94,14 +95,19 @@ class moduleBase():
                 else:
                     startXYZ_cut = [cutOffset - toolDiameter/2.0,finishAxiDist,zAxisOffset]
                     endXYZ_cut = [cutOffset - toolDiameter/2.0,startAxiDist,zAxisOffset]
-                    
                 for i in range(cutPasses):
                     zCutHeight = materialThickness - cutPassDZ*(i+1)
                     startXYZ_cut[2] = zCutHeight
                     endXYZ_cut[2] = zCutHeight
                     gcode += motion.addFeedandSpeed(feedrate = cutPassFeedRate, speed = cutPassSpindleSpeed)
+                    gcode += motion.turnSpindleOn()
+                    spindleOn = True
                     gcode += motion.rapid(startXYZ_cut,safeZ = safeZHeight)
                     gcode += motion.lineFeed(endXYZ_cut)
+            gcode += motion.addFeedandSpeed(feedrate = finalPassFeedRate, speed = finalPassSpindleSpeed)
+            if spindleOn == False:
+                gcode += motion.turnon()
+                spindleOn = True
                     
             
             if SelectXYAxis == 0:
@@ -111,14 +117,22 @@ class moduleBase():
                 startXYZ_final = [finalOffset - toolDiameter/2.0,finishAxiDist,zAxisOffset]
                 endXYZ_final = [finalOffset - toolDiameter/2.0,startAxiDist,zAxisOffset]
             
-            gcode += motion.addFeedandSpeed(feedrate = finalPassFeedRate, speed = finalPassSpindleSpeed)
+            
             for i in range(int(finalPasses)):
                 gcode += motion.rapid(startXYZ_final,safeZ = safeZHeight)
                 gcode += motion.lineFeed(endXYZ_final)
                 
+            gcode += motion.turnSpindleOff()
+            spindleOn = False
+            gcode += motion.rapid(homePosition,safeZ = safeZHeight)
             gcode += motion.addPostamble()
             
-            print gcode
+            setupGCode = motion.addPreamble()
+            setupGCode += motion.rapid(startXYZ_final,safeZ = safeZHeight)
+            setupGCode += motion.addPostamble()
+            
+            
+            return (gcode,setupGCode)
             
             
         else:

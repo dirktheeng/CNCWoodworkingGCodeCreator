@@ -1,0 +1,15 @@
+(Begin Preamble)
+(Created by CNC Woodworker g-Code Creator)
+(CNC Woodworker written by Dirk Van Essendelft)
+(g-code created at 05:24PM on February 01, 2014)
+G20G17G90G40G49G80
+G70G91.1
+G94
+(End Preamble)
+G0Z3.0
+G0X12.3121Y0.6074
+G0Z0.05
+(Begin Postamble)
+M09
+M30
+(End Postamble)

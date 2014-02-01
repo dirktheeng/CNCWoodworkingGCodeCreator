@@ -20,7 +20,7 @@
       <item>
        <widget class="QTabWidget" name="moduleTabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab_Jointer">
          <attribute name="title">
@@ -335,6 +335,157 @@
          <attribute name="title">
           <string>Straight Rip</string>
          </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <widget class="QTextBrowser" name="textBrowser_StraightRip_Setup"/>
+            </item>
+            <item>
+             <layout class="QGridLayout" name="gridLayout_9">
+              <item row="1" column="1">
+               <widget class="QGroupBox" name="groupBox_5">
+                <property name="title">
+                 <string>GroupBox</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_15">
+                 <item row="0" column="0">
+                  <layout class="QGridLayout" name="gridLayout_14">
+                   <item row="0" column="0">
+                    <layout class="QFormLayout" name="formLayout_6">
+                     <property name="fieldGrowthPolicy">
+                      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                     </property>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="materialLengthLabel_2">
+                       <property name="text">
+                        <string>Material Length</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLineEdit" name="materialLengthLineEdit_2"/>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="materialWidthLabel_2">
+                       <property name="text">
+                        <string>Material Width</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLineEdit" name="materialWidthLineEdit_2"/>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="materialThicknessLabel_2">
+                       <property name="text">
+                        <string>Material Thickness</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLineEdit" name="materialThicknessLineEdit_2"/>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="distFromOriginLabel_2">
+                       <property name="text">
+                        <string>Dist from Origin</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QLineEdit" name="distFromOriginLineEdit_2"/>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <layout class="QGridLayout" name="gridLayout_11">
+                <item row="0" column="0">
+                 <widget class="QGroupBox" name="groupBox_4">
+                  <property name="title">
+                   <string>Operation Properties</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_13">
+                   <item row="0" column="0">
+                    <layout class="QGridLayout" name="gridLayout_12">
+                     <item row="0" column="0">
+                      <layout class="QFormLayout" name="formLayout_5">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="selectAxisLabel_2">
+                         <property name="text">
+                          <string>Select Axis</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QComboBox" name="comboBox_StraightRip_SelectXYAxis"/>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="1" column="2">
+               <widget class="QGroupBox" name="groupBox_6">
+                <property name="title">
+                 <string>GroupBox</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_17">
+                 <item row="0" column="0">
+                  <layout class="QGridLayout" name="gridLayout_16">
+                   <item row="0" column="0">
+                    <layout class="QFormLayout" name="formLayout_9">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="toolDiameterLabel_3">
+                       <property name="text">
+                        <string>Tool Diameter</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLineEdit" name="toolDiameterLineEdit_3"/>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="cutterLengthLabel_3">
+                       <property name="text">
+                        <string>Cutter Length</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLineEdit" name="cutterLengthLineEdit_3"/>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="toolStickOutLabel_3">
+                       <property name="text">
+                        <string>Tool Stick Out</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLineEdit" name="toolStickOutLineEdit_3"/>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+         </layout>
         </widget>
        </widget>
       </item>
@@ -406,9 +557,18 @@
     <addaction name="actionGrid"/>
     <addaction name="actionPreamble"/>
     <addaction name="actionPostamble"/>
+    <addaction name="actionDefault_GCode_Folder"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionCalc_Work_Offset"/>
+    <addaction name="actionTool_Database"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuSettings"/>
+   <addaction name="menuTools"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionExit">
@@ -434,6 +594,21 @@
   <action name="actionPostamble">
    <property name="text">
     <string>Postamble</string>
+   </property>
+  </action>
+  <action name="actionCalc_Work_Offset">
+   <property name="text">
+    <string>Calc Work Offset</string>
+   </property>
+  </action>
+  <action name="actionTool_Database">
+   <property name="text">
+    <string>Tool Database</string>
+   </property>
+  </action>
+  <action name="actionDefault_GCode_Folder">
+   <property name="text">
+    <string>Default GCode Folder</string>
    </property>
   </action>
  </widget>

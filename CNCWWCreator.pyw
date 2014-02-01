@@ -20,14 +20,15 @@ class CNCWWCreator(QtGui.QMainWindow):
     The is the main program class
     '''
     def __init__(self,parent=None):
-        util = utilities(self)
+        self.util = utilities(parent = self)
         QtGui.QWidget.__init__(self,parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.vars = globalVars()
         self.connectActions()
-        self.vars.machineSettings = util.getSettings('machineSettings.txt')
-        self.vars.gridSettings = util.getSettings('gridSettings.txt')
+        self.vars.defaultGCodeDirectory = self.util.readDefaultGCodeDirectory()
+        self.vars.machineSettings = self.util.getSettings('machineSettings.txt')
+        self.vars.gridSettings = self.util.getSettings('gridSettings.txt')
         self.vars.moduleList = []
         for i in range(1000):
             mName = str(self.ui.moduleTabWidget.tabText(i))
@@ -49,6 +50,13 @@ class CNCWWCreator(QtGui.QMainWindow):
         self.ui.generateGCodePushButton.clicked.connect(self.onGenerateGCodePressed)
         self.ui.actionPostamble.triggered.connect(self.postDialog)
         self.ui.actionPreamble.triggered.connect(self.preDialog)
+        self.ui.actionDefault_GCode_Folder.triggered.connect(self.setDefaultGCodeFolder)
+        
+    def setDefaultGCodeFolder(self):
+       folder =  QtGui.QFileDialog.getExistingDirectory(directory = self.vars.defaultGCodeDirectory)
+       if folder != '':
+           self.vars.defaultGCodeDirectory = folder
+           self.util.saveTextFile('defaultGCodeDirectory.txt',folder)
         
     def machineSettinsDialog(self):
         '''
@@ -93,8 +101,9 @@ class CNCWWCreator(QtGui.QMainWindow):
         currentModule = str(self.ui.moduleTabWidget.tabText(currentModuleIndex)).replace(' ','')
         cmd = 'self.'+currentModule+'.saveModuleEntries()'
         exec(cmd)
-        cmd = 'self.'+currentModule+'.produceGCode()'
+        cmd = 'gcode, setupGCode = self.'+currentModule+'.produceGCode()'
         exec(cmd)
+        self.util.saveGCode(gcode, setupGCode, ModuleName = currentModule, folderPath = self.vars.defaultGCodeDirectory)
             
             
 class globalVars():

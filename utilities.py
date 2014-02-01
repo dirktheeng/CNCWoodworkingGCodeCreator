@@ -7,6 +7,7 @@ Created on Sun Jan 26 20:11:14 2014
 
 from PyQt4 import QtGui, QtCore
 import json
+import os
 
 class utilities():
     def __init__(self,parent=None):
@@ -116,5 +117,33 @@ class utilities():
         with open(fileName,'r') as settings:
             jsonDict = json.load(settings)
         return jsonDict
+        
+    def saveGCode(self,gcode, setupGCode, folderPath = None, ModuleName = 'Jointer',filter = 'Text (*.txt)'):
+        if folderPath == None:
+            folderPath = os.getcwd()
+        
+        caption = 'Save gCode from the ' + ModuleName + ' Module'
+        
+        include = not(QtGui.QMessageBox.question(self.parent,'Include Setup','Do you want to include the setup gcode?','Yes',button1Text = 'No'))
+        filePath = str(QtGui.QFileDialog.getSaveFileName(self.parent,directory = folderPath,caption = caption, filter = filter))
+        print filePath
+        path, fileName = os.path.split(filePath)
+        print path,fileName
+        fileNameGCode = ModuleName + '_' + fileName
+        print fileName
+        filePath = os.path.join(path,fileNameGCode)
+        self.saveTextFile(filePath,gcode)
+        if include:
+            fileNameSetup = ModuleName + '_Setup_' + fileName
+            filePath = os.path.join(path,fileNameSetup)
+            self.saveTextFile(filePath,setupGCode)
+        
+    def readDefaultGCodeDirectory(self):
+        try:
+            with open('defaultGCodeDirectory.txt','r') as dgd:
+                txt = dgd.read()
+                return txt
+        except:
+            return os.getcwd()
             
         

@@ -36,6 +36,10 @@ class gMotion():
         self._speed = 'S'
         self._preamble = self.util.readTextFile('Preamble.txt')
         self._postamble = self.util.readTextFile('Postamble.txt')
+        self._pause = 'G04P'
+        self._spindleOnCW = 'M03'
+        self._spindleOnCCW = 'M04'
+        self._spindleOff = 'M05'
     
     def rapid(self,XYZ,safeZ = None):
         '''
@@ -51,7 +55,7 @@ class gMotion():
         XYZ = self.__translateXYZ(XYZ)
 
         if safeZ == None:
-            return self._g_rapid + self.__code(XYZ) + self._new_line
+            return self._g_rapid + self.__codeXYZ(XYZ) + self._new_line
         safeZ = str(safeZ)
         XY = (XYZ[0],XYZ[1])
         Z = XYZ[2]
@@ -95,6 +99,19 @@ class gMotion():
         if speed != None:
             gcode += self._speed + str(speed)
         return gcode
+        
+    def turnSpindleOn(self, direction = 'CW', pause = 5):
+        gcode = ''
+        if direction == 'CW':
+            gcode += self._spindleOnCW + self._new_line
+        else:
+            gcode += self._spindleOnCCW + self._new_line
+        if pause > 0:
+            gcode += self._pause + str(pause) + self._new_line
+        return gcode
+        
+    def turnSpindleOff(self):
+        return self._spindleOff + self._new_line
         
     def __translateXYZ(self,XYZ):
         '''
