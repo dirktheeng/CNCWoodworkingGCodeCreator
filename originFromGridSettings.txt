@@ -1,0 +1,1 @@
+{"yNegativeRadioButton": false, "yPositiveRadioButton": true, "xGridPositionSpinBox": "5", "xPositiveRadioButton": false, "yGridPositionSpinBox": "4", "xNegativeRadioButton": true}

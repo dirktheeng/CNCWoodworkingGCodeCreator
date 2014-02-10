@@ -27,45 +27,45 @@
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
          <layout class="QFormLayout" name="formLayout">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
           <item row="0" column="0">
-           <widget class="QLabel" name="gridXSpacingLabel">
-            <property name="text">
-             <string>Grid X Spacing</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="gridXSpacingLineEdit"/>
-          </item>
-          <item row="1" column="0">
            <widget class="QLabel" name="gridXOffsetLabel">
             <property name="text">
              <string>Grid X Offset</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="0" column="1">
            <widget class="QLineEdit" name="gridXOffsetLineEdit"/>
           </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="gridXSpacingLabel">
+            <property name="text">
+             <string>Grid X Spacing</string>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="0">
+           <widget class="QLabel" name="gridYOffsetLabel">
+            <property name="text">
+             <string>Grid Y Offset</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="gridYOffsetLineEdit"/>
+          </item>
+          <item row="3" column="0">
            <widget class="QLabel" name="gridYSpacingLabel">
             <property name="text">
              <string>Grid Y Spacing</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="gridYSpacingLineEdit"/>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="gridYSpacingLabel_2">
-            <property name="text">
-             <string>Grid Y Spacing</string>
-            </property>
-           </widget>
-          </item>
           <item row="3" column="1">
-           <widget class="QLineEdit" name="gridYSpacingLineEdit_2"/>
+           <widget class="QLineEdit" name="gridYSpacingLineEdit"/>
           </item>
           <item row="4" column="0">
            <widget class="QLabel" name="pinDiameterLabel">
@@ -76,6 +76,9 @@
           </item>
           <item row="4" column="1">
            <widget class="QLineEdit" name="pinDiameterLineEdit"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="gridXSpacingLineEdit"/>
           </item>
          </layout>
         </item>

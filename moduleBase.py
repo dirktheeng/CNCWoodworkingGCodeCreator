@@ -16,14 +16,19 @@ class moduleBase():
     def __init__(self,name,parent=None):
         self.parent = parent
         self.name = name
-        self.loadSetupHTML()
-        self.setupXYComboBox()
         self.util = utilities() # this is here so the methods appear in text completion
         cmd = 'self.util = utilities(parent = self.parent.ui.tab_'+name+')'
         exec(cmd)
-        self.parentUtil = utilities(parent=parent)
-        self.parentUtil.setAllLineEditValidator2Double(listLineEdit = self.util.getQObjectNames(QtGui.QLineEdit))
+        self.setupXYComboBox()
+        self.modUtil = utilities(parent = self)
+        self._lineEdits = self.util.returnChildrenDictionary(QtGui.QLineEdit)
+        self._spinBoxes = self.util.returnChildrenDictionary(QtGui.QSpinBox)
+        self._checkBoxes = self.util.returnChildrenDictionary(QtGui.QCheckBox)
+        self._comboBoxes = self.util.returnChildrenDictionary(QtGui.QComboBox)
+        self._setupText = self.util.returnChildrenDictionary(QtGui.QTextBrowser, searchString = 'setupText')
+        self.modUtil.setAllLineEditValidator2Double()
         self.loadModuleEntries()
+        self.loadSetupHTML()
         
     def loadSetupHTML(self):
         try:
@@ -33,23 +38,22 @@ class moduleBase():
             QtGui.QMessageBox.information(self.parent,'File Error',self.name+'_Setup.htm was not found')
             htmlText = None
         if htmlText != None:
-            cmd = 'self.parent.ui.textBrowser_'+self.name+'_Setup.setHtml(htmlText)'
             try:
-                exec(cmd)
+                self._setupText['setupText'].setHtml(htmlText)
             except:
-                pass
+                print 'Problem loading setup Text for ' + self.name
             
     def setupXYComboBox(self):
         try:
-            cmd = 'self.parent.ui.comboBox_'+self.name+'_SelectXYAxis.addItems(["X Axis","Y Axis"])'
-            exec(cmd)
+            selectXYCB = self.util.returnChildrenDictionary(QtGui.QComboBox,searchString = 'selectXYAxis')
+            selectXYCB['selectXYAxis'].addItems(["X Axis","Y Axis"])
         except:
             pass
                 
     def saveModuleEntries(self):
         fileName = self.name+'_ModuleEntries.txt'
         self.buildModuleDict()
-        self.util.dumpSettings(fileName,settingsDict = self.moduleDict)
+        self.modUtil.dumpSettings(fileName,settingsDict = self.moduleDict)
         
     def buildModuleDict(self):
         moduleEntryDict = self.util.getQObjectDict(QtGui.QLineEdit)
@@ -59,7 +63,7 @@ class moduleBase():
         
     def loadModuleEntries(self):
         fileName = self.name+'_ModuleEntries.txt'
-        self.parentUtil.populateInfo(fileName)
+        self.modUtil.populateInfo(fileName)
         self.buildModuleDict()
         
     def produceGCode(self):
@@ -74,22 +78,29 @@ class moduleBase():
         motion = gMotion(Table_Offset=Table_Offset, parent = self)
         gcode = ''
         gcode = motion.addPreamble()
-        for k,v in self.moduleDict.items():
-            k = k.split('LineEdit')[0]
-            k = k.split('SpinBox')[0]
-            if k.rfind("_"+self.name+"_") != -1:
-                k = k.split("_"+self.name+"_")[1]
-            cmd = k + " = float(" + str(v) + ')'
-            print k, v
-            exec(cmd)
-        homePosition = [float(self.parent.vars.machineSettings['bedXLengthLineEdit']),float(self.parent.vars.machineSettings['bedYLengthLineEdit']),safeZHeight]
+        safeZHeight          = float(self._lineEdits['safeZHeight'].text())
+        homePosition = [float(self.parent._machineSettings['bedXLengthLineEdit']),float(self.parent._machineSettings['bedYLengthLineEdit']),safeZHeight]
         if self.name == 'Jointer':
-            startAxiDist = distFromOrigin + materialLength + overTravel
-            finishAxiDist = distFromOrigin - overTravel
-            cutPasses = int(cutPasses)
+            distFromOrigin          = float(self._lineEdits['distFromOrigin'].text())
+            materialLength          = float(self._lineEdits['materialLength'].text())
+            materialThickness       = float(self._lineEdits['materialThickness'].text())
+            cutOffset               = float(self._lineEdits['cutOffset'].text())
+            zAxisOffset             = float(self._lineEdits['zAxisOffset'].text())
+            toolDiameter            = float(self._lineEdits['toolDiameter'].text())
+            overTravel              = float(self._lineEdits['overTravel'].text())
+            cutPassFeedRate         = float(self._lineEdits['cutPassFeedRate'].text())
+            cutPassSpindleSpeed     = float(self._lineEdits['cutPassSpindleSpeed'].text())
+            finalPassFeedRate       = float(self._lineEdits['finalPassFeedRate'].text())
+            finalPassSpindleSpeed   = float(self._lineEdits['finalPassSpindleSpeed'].text())
+            finalOffset             = float(self._lineEdits['finalOffset'].text())
+            cutPasses               = int(self._spinBoxes['cutPasses'].text())
+            finalPasses             = int(self._spinBoxes['finalPasses'].text())
+            selectXYAxis            = int(self._comboBoxes['selectXYAxis'].currentIndex())
+            startAxiDist            = distFromOrigin + materialLength + overTravel
+            finishAxiDist           = distFromOrigin - overTravel
             if cutPasses > 0:
                 cutPassDZ = (materialThickness -  zAxisOffset)/ (cutPasses)
-                if SelectXYAxis == 0:
+                if selectXYAxis == 0:
                     startXYZ_cut = [startAxiDist,cutOffset - toolDiameter/2.0,zAxisOffset]
                     endXYZ_cut = [finishAxiDist,cutOffset - toolDiameter/2.0,zAxisOffset]
                 else:
@@ -106,11 +117,11 @@ class moduleBase():
                     gcode += motion.lineFeed(endXYZ_cut)
             gcode += motion.addFeedandSpeed(feedrate = finalPassFeedRate, speed = finalPassSpindleSpeed)
             if spindleOn == False:
-                gcode += motion.turnon()
+                gcode += motion.turnSpindleOn()
                 spindleOn = True
                     
             
-            if SelectXYAxis == 0:
+            if selectXYAxis == 0:
                 startXYZ_final = [startAxiDist,finalOffset - toolDiameter/2.0,zAxisOffset]
                 endXYZ_final = [finishAxiDist,finalOffset - toolDiameter/2.0,zAxisOffset]
             else:

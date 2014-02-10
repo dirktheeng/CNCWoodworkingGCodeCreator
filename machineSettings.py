@@ -15,6 +15,10 @@ class machineSettingsDialog(QtGui.QDialog):
         self.ui = Ui_machineSettings()
         self.ui.setupUi(self)
         self.util =utilities(parent = self)
+        self._lineEdits = self.util.returnChildrenDictionary(QtGui.QLineEdit)
+        self._spinBoxes = self.util.returnChildrenDictionary(QtGui.QSpinBox)
+        self._checkBoxes = self.util.returnChildrenDictionary(QtGui.QCheckBox)
+        self._comboBoxes = self.util.returnChildrenDictionary(QtGui.QComboBox)
         self.util.setAllLineEditValidator2Double()
         self.util.populateInfo('machineSettings.txt')
         self.connectActions()
@@ -27,4 +31,4 @@ class machineSettingsDialog(QtGui.QDialog):
         
     def onOKButton(self):
         self.util.dumpSettings('machineSettings.txt')
-        self.parent.vars.machineSettings = self.util.getQObjectDict(QtGui.QLineEdit)
+        self.parent._machineSettings = self.util.getQObjectDict(QtGui.QLineEdit)

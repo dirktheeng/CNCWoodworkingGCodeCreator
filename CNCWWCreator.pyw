@@ -12,6 +12,7 @@ from utilities import utilities
 from machineSettings import machineSettingsDialog
 from gridSettings import gridSettingsDialog
 from prepostamble import prePostAmbleDialog
+from setOriginFromGrid import setOriginFromGridDialog
 from moduleBase import moduleBase
 
 
@@ -24,22 +25,23 @@ class CNCWWCreator(QtGui.QMainWindow):
         QtGui.QWidget.__init__(self,parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.vars = globalVars()
         self.connectActions()
-        self.vars.defaultGCodeDirectory = self.util.readDefaultGCodeDirectory()
-        self.vars.machineSettings = self.util.getSettings('machineSettings.txt')
-        self.vars.gridSettings = self.util.getSettings('gridSettings.txt')
-        self.vars.moduleList = []
+        self._defaultGCodeDirectory = self.util.readDefaultGCodeDirectory()
+        self._machineSettings = self.util.getSettings('machineSettings.txt')
+        self._gridSettings = self.util.getSettings('gridSettings.txt')
+        self._moduleList = []
+        self._origin = [0,0]
+        self._moduleDict = {}
         for i in range(1000):
             mName = str(self.ui.moduleTabWidget.tabText(i))
             if mName == '':
                 break
             else:
-                self.vars.moduleList.append(mName.replace(' ',''))
-        for mod in self.vars.moduleList:
-            cmd = 'self.'+mod+' = moduleBase("'+mod+'",parent = self)'
-            exec(cmd)
-        
+                self._moduleList.append(mName.replace(' ',''))
+        for mod in self._moduleList:
+            self._moduleDict[mod] = moduleBase(mod,parent = self)
+
+         
     def connectActions(self):
         """
         Connect the user interface controls to the logic
@@ -47,15 +49,27 @@ class CNCWWCreator(QtGui.QMainWindow):
         self.ui.actionMachine.triggered.connect(self.machineSettinsDialog)
         self.ui.actionGrid.triggered.connect(self.gridSettinsDialog)
         self.ui.actionExit.triggered.connect(self.mainQuit)
-        self.ui.generateGCodePushButton.clicked.connect(self.onGenerateGCodePressed)
+        self.ui.generateGCode_pushButton.clicked.connect(self.onGenerateGCodePressed)
         self.ui.actionPostamble.triggered.connect(self.postDialog)
         self.ui.actionPreamble.triggered.connect(self.preDialog)
         self.ui.actionDefault_GCode_Folder.triggered.connect(self.setDefaultGCodeFolder)
+        QButtons = self.findChildren(QtGui.QPushButton)
+        QButtonNames = self.util.getQObjectNames(QtGui.QPushButton)
+        for i,BName in enumerate(QButtonNames):
+            BName = BName.split('_')[0].upper()
+            if BName == 'SETORIGINFROMGRID':
+                QButtons[i].clicked.connect(self.setOriginFromGrid)
+        self.ui.climbCutCheckBox.clicked.connect(self.climbCheck)
         
+    def climbCheck(self):
+        if self.ui.climbCutCheckBox.isChecked():
+            self.util.setToFalseIfTrue(self.ui.conventionalCutCheckBox)
+        
+    
     def setDefaultGCodeFolder(self):
-       folder =  QtGui.QFileDialog.getExistingDirectory(directory = self.vars.defaultGCodeDirectory)
+       folder =  QtGui.QFileDialog.getExistingDirectory(directory = self._defaultGCodeDirectory)
        if folder != '':
-           self.vars.defaultGCodeDirectory = folder
+           self._defaultGCodeDirectory = folder
            self.util.saveTextFile('defaultGCodeDirectory.txt',folder)
         
     def machineSettinsDialog(self):
@@ -64,6 +78,16 @@ class CNCWWCreator(QtGui.QMainWindow):
         '''
         machineSettings = machineSettingsDialog(parent = self)
         machineSettings.exec_()
+        
+    def setOriginFromGrid(self):
+        '''
+        enstantiates an instance of the set origin from grid dialog and calls the gui
+        '''
+#        currentModuleIndex = self.ui.moduleTabWidget.currentIndex()
+#        currentModule = str(self.ui.moduleTabWidget.tabText(currentModuleIndex)).replace(' ','')
+        currentModule = self.util.getCurrentModuleName()
+        setOriginFromGrid = setOriginFromGridDialog(parent = self, currentModule = currentModule)
+        setOriginFromGrid.exec_()
         
     def gridSettinsDialog(self):
         '''
@@ -90,7 +114,8 @@ class CNCWWCreator(QtGui.QMainWindow):
         '''
         handles actions on exit
         '''
-        pass
+        for k,v in self._moduleDict.items():
+            v.saveModuleEntries()
     
     def onGenerateGCodePressed(self):
         '''
@@ -99,19 +124,9 @@ class CNCWWCreator(QtGui.QMainWindow):
         '''
         currentModuleIndex = self.ui.moduleTabWidget.currentIndex()
         currentModule = str(self.ui.moduleTabWidget.tabText(currentModuleIndex)).replace(' ','')
-        cmd = 'self.'+currentModule+'.saveModuleEntries()'
-        exec(cmd)
-        cmd = 'gcode, setupGCode = self.'+currentModule+'.produceGCode()'
-        exec(cmd)
-        self.util.saveGCode(gcode, setupGCode, ModuleName = currentModule, folderPath = self.vars.defaultGCodeDirectory)
-            
-            
-class globalVars():
-    '''
-    This is a dummy class to hold vars separate from other vars and functions
-    '''
-    def __init__(self,parent=None):
-        self.parent = parent
+        self._moduleDict[currentModule].saveModuleEntries()
+        gcode, setupGCode = self._moduleDict[currentModule].produceGCode()
+        self.util.saveGCode(gcode, setupGCode, ModuleName = currentModule, folderPath = self._defaultGCodeDirectory)
         
 
 if __name__=='__main__':

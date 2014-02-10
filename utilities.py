@@ -13,17 +13,25 @@ class utilities():
     def __init__(self,parent=None):
         self.parent = parent
 
-    def getQObjectNames(self,QObject, CutUnwanted = True):
+    def getQObjectNames(self,QObject, CutUnwanted = True, returnQObject = False):
         listQQObject = self.parent.findChildren(QObject)
         listQObject =  [str(t.objectName()) for t in listQQObject]
         if CutUnwanted:
             listQObjectFinal = []
-            for item in listQObject:
+            listQQObjectFinal = []
+            for i,item in enumerate(listQObject):
                 if item.rfind('spinbox_lineedit') == -1:
                     listQObjectFinal.append(item)
-            return listQObjectFinal
+                    listQQObjectFinal.append(listQQObject[i])
+            if returnQObject:
+                return listQObjectFinal, listQQObjectFinal
+            else:
+                return listQObjectFinal
         else:
-            return listQObject
+            if returnQObject:
+                return listQObject, listQQObject
+            else:
+                return listQObject
  
     def getSpinBoxNames(self):
         listSpinBoxQObject = self.parent.findChildren(QtGui.QSpinBox)
@@ -35,11 +43,16 @@ class utilities():
             return [str(t.text()) for t in QObjectChildren]
         elif QObject == QtGui.QComboBox:
             return [t.currentIndex() for t in QObjectChildren]
+        elif QObject == QtGui.QButtonGroup:
+            return [str(t.checkedButton().text()) for t in QObjectChildren]
+        elif QObject == QtGui.QRadioButton:
+            return [t.isChecked() for t in QObjectChildren]
         else:
             return None
     
     def getQObjectDict(self,QObject):
         QObjectNames = self.getQObjectNames(QObject,CutUnwanted = False)
+        print QObjectNames
         QObjectVals = self.getQObjectVals(QObject)
         comboBoxDict = {}
         for i,item in enumerate(QObjectNames):
@@ -51,27 +64,18 @@ class utilities():
         settings = self.getSettings(fileName)
         if settings != None:
             for key,val in settings.items():
-                if key.upper().rfind('LINEEDIT') != -1:
-                    try:
-                        cmd = 'self.parent.ui.'+key+'.setText("'+val+'")'
-                        exec(cmd)
-                    except:
-                        print 'problem loading line edit'
-                        print cmd
-                elif key.upper().rfind('COMBOBOX') != -1:
-                    try:
-                        cmd = 'self.parent.ui.'+key+'.setCurrentIndex('+val+')'
-                        exec(cmd)
-                    except:
-                        print 'problem loading combo box'
-                        print cmd
-                elif key.upper().rfind('SPINBOX') != -1:
-                    try:
-                        cmd = 'self.parent.ui.'+key+'.setValue('+val+')'
-                        exec(cmd)
-                    except:
-                        print 'problem loading spin box'
-                        print cmd
+                fieldName = self.stripQObjectFromName([key])[0]
+                try:
+                    if key.upper().rfind('LINEEDIT') != -1:
+                        self.parent._lineEdits[fieldName].setText(val)
+                    elif key.upper().rfind('COMBOBOX') != -1:
+                        self.parent._comboBoxes[fieldName].setCurrentIndex(int(val))
+                    elif key.upper().rfind('SPINBOX') != -1:
+                        self.parent._spinBoxes[fieldName].setValue(float(val))
+                    elif key.upper().rfind('RADIOBUTTON') != -1:
+                        self.parent._radioButtons[fieldName].setChecked(bool(val))
+                except:
+                    print 'problem setting ' + fieldName
                 
     def dumpSettings(self,fileName,settingsDict = None):
         if settingsDict == None:
@@ -99,10 +103,11 @@ class utilities():
             
     def setAllLineEditValidator2Double(self, listLineEdit = None):
         if listLineEdit == None:
-            listLineEdit = self.getQObjectNames(QtGui.QLineEdit)
+            listLineEdit = self.parent._lineEdits.keys()
         for item in listLineEdit:
-            cmd = 'self.parent.ui.'+item+'.setValidator(QtGui.QDoubleValidator())'
-            exec(cmd)
+            self.parent._lineEdits[item].setValidator(QtGui.QDoubleValidator())
+#            cmd = 'self.parent.ui.'+item+'.setValidator(QtGui.QDoubleValidator())'
+#            exec(cmd)
             
     def readTextFile(self,fileName):
         with open(fileName,'r') as txtFile:
@@ -145,5 +150,38 @@ class utilities():
                 return txt
         except:
             return os.getcwd()
+
+    def setToFalseIfTrue(self,QButton):
+        if QButton.isChecked():
+            QButton.setCheckState(False)
             
+    def returnChildrenDictionary(self,QObject, searchString = None):
+        Names, QObjects = self.getQObjectNames(QObject,returnQObject = True)
+        Names = self.stripQObjectFromName(Names)
+        childDict = dict(zip(Names,QObjects))
+        if searchString == None:
+            return childDict
+        else:
+            searchDict = {}
+            for k,v in childDict.items():
+                if k.rfind(searchString) != -1:
+                    searchDict[k] = v
+            return searchDict
+            
+    def getCurrentModuleName(self):
+        '''
+        this module is only used if the parent is the main class
+        '''
+        currentModuleIndex = self.parent.ui.moduleTabWidget.currentIndex()
+        currentModule = str(self.parent.ui.moduleTabWidget.tabText(currentModuleIndex)).replace(' ','')
+        return currentModule
         
+    def stripQObjectFromName(self,Names):
+        Names = [t.split('LineEdit')[0] for t in Names]
+        Names = [t.split('SpinBox')[0] for t in Names]
+        Names = [t.split('CheckBox')[0] for t in Names]
+        Names = [t.split('ComboBox')[0] for t in Names]
+        Names = [t.split('TextBrowser')[0] for t in Names]
+        Names = [t.split('RadioButton')[0] for t in Names]
+        return Names
+            

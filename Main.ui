@@ -20,7 +20,7 @@
       <item>
        <widget class="QTabWidget" name="moduleTabWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_Jointer">
          <attribute name="title">
@@ -30,7 +30,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
-             <widget class="QTextBrowser" name="textBrowser_Jointer_Setup">
+             <widget class="QTextBrowser" name="setupTextTextBrowser">
               <property name="enabled">
                <bool>true</bool>
               </property>
@@ -77,7 +77,7 @@
                       </widget>
                      </item>
                      <item row="0" column="1">
-                      <widget class="QComboBox" name="comboBox_Jointer_SelectXYAxis"/>
+                      <widget class="QComboBox" name="selectXYAxisComboBox"/>
                      </item>
                      <item row="1" column="0">
                       <widget class="QLabel" name="overTravelLabel">
@@ -339,7 +339,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
-             <widget class="QTextBrowser" name="textBrowser_StraightRip_Setup"/>
+             <widget class="QTextBrowser" name="setupTextTextBrowser_2"/>
             </item>
             <item>
              <layout class="QGridLayout" name="gridLayout_9">
@@ -386,16 +386,6 @@
                      <item row="2" column="1">
                       <widget class="QLineEdit" name="materialThicknessLineEdit_2"/>
                      </item>
-                     <item row="3" column="0">
-                      <widget class="QLabel" name="distFromOriginLabel_2">
-                       <property name="text">
-                        <string>Dist from Origin</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="1">
-                      <widget class="QLineEdit" name="distFromOriginLineEdit_2"/>
-                     </item>
                     </layout>
                    </item>
                   </layout>
@@ -406,24 +396,152 @@
               <item row="1" column="0">
                <layout class="QGridLayout" name="gridLayout_11">
                 <item row="0" column="0">
+                 <widget class="QGroupBox" name="groupBox_7">
+                  <property name="title">
+                   <string>Operation Origin</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_8">
+                   <item>
+                    <layout class="QVBoxLayout" name="verticalLayout_7">
+                     <item>
+                      <layout class="QFormLayout" name="formLayout_8">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="xOriginLabel">
+                         <property name="text">
+                          <string>X Origin</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QLineEdit" name="xOriginLineEdit"/>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="yOriginLabel">
+                         <property name="text">
+                          <string>Y Origin</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QLineEdit" name="yOriginLineEdit"/>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="setOriginFromGrid_pushButton">
+                       <property name="text">
+                        <string>Set Origin From Grid</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item row="0" column="1">
                  <widget class="QGroupBox" name="groupBox_4">
                   <property name="title">
                    <string>Operation Properties</string>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_13">
-                   <item row="0" column="0">
-                    <layout class="QGridLayout" name="gridLayout_12">
+                   <item row="0" column="1">
+                    <layout class="QGridLayout" name="gridLayout_18">
                      <item row="0" column="0">
-                      <layout class="QFormLayout" name="formLayout_5">
+                      <layout class="QFormLayout" name="formLayout_13">
+                       <property name="fieldGrowthPolicy">
+                        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                       </property>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="selectAxisLabel_2">
+                        <widget class="QLabel" name="positiveXLabel">
                          <property name="text">
-                          <string>Select Axis</string>
+                          <string>Positive X</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="1">
-                        <widget class="QComboBox" name="comboBox_StraightRip_SelectXYAxis"/>
+                        <widget class="QCheckBox" name="positiveXCheckBox"/>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="positiveYLabel">
+                         <property name="text">
+                          <string>Positive Y</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QCheckBox" name="positiveYCheckBox"/>
+                       </item>
+                       <item row="2" column="0">
+                        <widget class="QLabel" name="climbCutLabel">
+                         <property name="text">
+                          <string>Climb Cut</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="1">
+                        <widget class="QCheckBox" name="climbCutCheckBox"/>
+                       </item>
+                       <item row="3" column="0">
+                        <widget class="QLabel" name="conventionalCutLabel">
+                         <property name="text">
+                          <string>Conventional Cut</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="1">
+                        <widget class="QCheckBox" name="conventionalCutCheckBox"/>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </item>
+                   <item row="0" column="0">
+                    <layout class="QGridLayout" name="gridLayout_12">
+                     <item row="0" column="0">
+                      <layout class="QFormLayout" name="formLayout_5">
+                       <property name="fieldGrowthPolicy">
+                        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                       </property>
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="p1XLabel">
+                         <property name="text">
+                          <string>P1 X</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QLineEdit" name="p1XLineEdit"/>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="p1YLabel">
+                         <property name="text">
+                          <string>P1 Y</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QLineEdit" name="p1YLineEdit"/>
+                       </item>
+                       <item row="2" column="0">
+                        <widget class="QLabel" name="p2XLabel">
+                         <property name="text">
+                          <string>P2 X</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="1">
+                        <widget class="QLineEdit" name="p2XLineEdit"/>
+                       </item>
+                       <item row="3" column="0">
+                        <widget class="QLabel" name="p2YLabel">
+                         <property name="text">
+                          <string>P2 Y</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="1">
+                        <widget class="QLineEdit" name="p2YLineEdit"/>
                        </item>
                       </layout>
                      </item>
@@ -505,21 +623,21 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="launchFeedAndSpeedspushButton">
+         <widget class="QPushButton" name="launchFeedAndSpeeds_pushButton">
           <property name="text">
            <string>F&amp;S Calc</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="loadToolpushButton">
+         <widget class="QPushButton" name="loadTool_pushButton">
           <property name="text">
            <string>Load Tool</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="generateGCodePushButton">
+         <widget class="QPushButton" name="generateGCode_pushButton">
           <property name="text">
            <string>Generate g-Code</string>
           </property>
@@ -613,7 +731,7 @@
   </action>
  </widget>
  <tabstops>
-  <tabstop>comboBox_Jointer_SelectXYAxis</tabstop>
+  <tabstop>selectXYAxisComboBox</tabstop>
   <tabstop>overTravelLineEdit</tabstop>
   <tabstop>safeZHeightLineEdit</tabstop>
   <tabstop>zAxisOffsetLineEdit_2</tabstop>
@@ -632,9 +750,9 @@
   <tabstop>toolDiameterLineEdit</tabstop>
   <tabstop>cutterLengthLineEdit</tabstop>
   <tabstop>toolStickOutLineEdit</tabstop>
-  <tabstop>launchFeedAndSpeedspushButton</tabstop>
-  <tabstop>loadToolpushButton</tabstop>
-  <tabstop>generateGCodePushButton</tabstop>
+  <tabstop>launchFeedAndSpeeds_pushButton</tabstop>
+  <tabstop>loadTool_pushButton</tabstop>
+  <tabstop>generateGCode_pushButton</tabstop>
   <tabstop>moduleTabWidget</tabstop>
  </tabstops>
  <resources/>
