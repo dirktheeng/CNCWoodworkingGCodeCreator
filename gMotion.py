@@ -98,6 +98,9 @@ class gMotion():
             gcode += self._feed + str(feedrate)
         if speed != None:
             gcode += self._speed + str(speed)
+            
+        if feedrate != None or speed != None:
+            gcode += self._new_line
         return gcode
         
     def turnSpindleOn(self, direction = 'CW', pause = 5):

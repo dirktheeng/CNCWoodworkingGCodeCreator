@@ -15,11 +15,11 @@ class gridSettingsDialog(QtGui.QDialog):
         self.ui = Ui_gridSettings()
         self.ui.setupUi(self)
         self.util = utilities(parent = self)
-        self.util.setAllLineEditValidator2Double()
         self._lineEdits = self.util.returnChildrenDictionary(QtGui.QLineEdit)
         self._spinBoxes = self.util.returnChildrenDictionary(QtGui.QSpinBox)
         self._checkBoxes = self.util.returnChildrenDictionary(QtGui.QCheckBox)
         self._comboBoxes = self.util.returnChildrenDictionary(QtGui.QComboBox)
+        self.util.setAllLineEditValidator2Double()
         self.util.populateInfo('gridSettings.txt')
         self.connectActions()
 

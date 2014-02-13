@@ -1,1 +1,1 @@
-{"gridXOffsetLineEdit": "3", "pinDiameterLineEdit": "0.501", "maxXRowsLineEdit": "61", "gridXSpacingLineEdit": "1.5", "gridYSpacingLineEdit": "2", "gridYOffsetLineEdit": "1.5", "maxYRowsLineEdit": "30"}
+{"gridXOffsetLineEdit": "3", "pinDiameterLineEdit": "0.501", "maxXRowsLineEdit": "61", "gridXSpacingLineEdit": "1.5", "gridYSpacingLineEdit": "1.5", "gridYOffsetLineEdit": "2", "maxYRowsLineEdit": "30"}

@@ -117,6 +117,7 @@ class moduleBase():
             selectXYAxis            = int(self._comboBoxes['selectXYAxis'].currentIndex())
             startAxiDist            = distFromOrigin + materialLength + overTravel
             finishAxiDist           = distFromOrigin - overTravel
+            firstCutPass = True
             if cutPasses > 0:
                 cutPassDZ = (materialThickness -  zAxisOffset)/ (cutPasses)
                 if selectXYAxis == 0:
@@ -129,8 +130,10 @@ class moduleBase():
                     zCutHeight = materialThickness - cutPassDZ*(i+1)
                     startXYZ_cut[2] = zCutHeight
                     endXYZ_cut[2] = zCutHeight
-                    gcode += motion.addFeedandSpeed(feedrate = cutPassFeedRate, speed = cutPassSpindleSpeed)
-                    gcode += motion.turnSpindleOn()
+                    if firstCutPass:
+                        gcode += motion.addFeedandSpeed(feedrate = cutPassFeedRate, speed = cutPassSpindleSpeed)
+                        gcode += motion.turnSpindleOn()
+                        firstCutPass = False
                     spindleOn = True
                     gcode += motion.rapid(startXYZ_cut,safeZ = safeZHeight)
                     gcode += motion.lineFeed(endXYZ_cut)
