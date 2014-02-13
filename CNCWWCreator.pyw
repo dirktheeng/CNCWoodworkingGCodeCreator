@@ -25,7 +25,6 @@ class CNCWWCreator(QtGui.QMainWindow):
         QtGui.QWidget.__init__(self,parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.connectActions()
         self._defaultGCodeDirectory = self.util.readDefaultGCodeDirectory()
         self._machineSettings = self.util.getSettings('machineSettings.txt')
         self._gridSettings = self.util.getSettings('gridSettings.txt')
@@ -40,7 +39,7 @@ class CNCWWCreator(QtGui.QMainWindow):
                 self._moduleList.append(mName.replace(' ',''))
         for mod in self._moduleList:
             self._moduleDict[mod] = moduleBase(mod,parent = self)
-
+        self.connectActions()
          
     def connectActions(self):
         """
@@ -59,11 +58,25 @@ class CNCWWCreator(QtGui.QMainWindow):
             BName = BName.split('_')[0].upper()
             if BName == 'SETORIGINFROMGRID':
                 QButtons[i].clicked.connect(self.setOriginFromGrid)
-        self.ui.climbCutCheckBox.clicked.connect(self.climbCheck)
+        for k,v in self._moduleDict.items():
+            if v._climbCutObject != None:
+                v._climbCutObject.clicked.connect(self.climbCheck)
+                v._conventionalCutObject.clicked.connect(self.conventionalCheck)
+        
         
     def climbCheck(self):
-        if self.ui.climbCutCheckBox.isChecked():
-            self.util.setToFalseIfTrue(self.ui.conventionalCutCheckBox)
+        currentModuleName = self.util.getCurrentModuleName()
+        conventionalCutObject = self._moduleDict[currentModuleName]._conventionalCutObject
+        climbCutObject = self._moduleDict[currentModuleName]._climbCutObject
+        if climbCutObject.isChecked():
+            self.util.setToFalseIfTrue(conventionalCutObject)
+            
+    def conventionalCheck(self):
+        currentModuleName = self.util.getCurrentModuleName()
+        conventionalCutObject = self._moduleDict[currentModuleName]._conventionalCutObject
+        climbCutObject = self._moduleDict[currentModuleName]._climbCutObject
+        if conventionalCutObject.isChecked():
+            self.util.setToFalseIfTrue(climbCutObject)
         
     
     def setDefaultGCodeFolder(self):

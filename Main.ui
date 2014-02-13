@@ -20,7 +20,7 @@
       <item>
        <widget class="QTabWidget" name="moduleTabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab_Jointer">
          <attribute name="title">
@@ -395,7 +395,7 @@
               </item>
               <item row="1" column="0">
                <layout class="QGridLayout" name="gridLayout_11">
-                <item row="0" column="0">
+                <item row="0" column="1">
                  <widget class="QGroupBox" name="groupBox_7">
                   <property name="title">
                    <string>Operation Origin</string>
@@ -439,7 +439,7 @@
                   </layout>
                  </widget>
                 </item>
-                <item row="0" column="1">
+                <item row="0" column="2">
                  <widget class="QGroupBox" name="groupBox_4">
                   <property name="title">
                    <string>Operation Properties</string>
@@ -453,44 +453,34 @@
                         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
                        </property>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="positiveXLabel">
-                         <property name="text">
-                          <string>Positive X</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="1">
-                        <widget class="QCheckBox" name="positiveXCheckBox"/>
-                       </item>
-                       <item row="1" column="0">
-                        <widget class="QLabel" name="positiveYLabel">
-                         <property name="text">
-                          <string>Positive Y</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="1">
-                        <widget class="QCheckBox" name="positiveYCheckBox"/>
-                       </item>
-                       <item row="2" column="0">
                         <widget class="QLabel" name="climbCutLabel">
                          <property name="text">
                           <string>Climb Cut</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="2" column="1">
+                       <item row="0" column="1">
                         <widget class="QCheckBox" name="climbCutCheckBox"/>
                        </item>
-                       <item row="3" column="0">
+                       <item row="1" column="0">
                         <widget class="QLabel" name="conventionalCutLabel">
                          <property name="text">
                           <string>Conventional Cut</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="3" column="1">
+                       <item row="1" column="1">
                         <widget class="QCheckBox" name="conventionalCutCheckBox"/>
+                       </item>
+                       <item row="2" column="0">
+                        <widget class="QLabel" name="nearToOriginLabel">
+                         <property name="text">
+                          <string>Near To Origin</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="1">
+                        <widget class="QCheckBox" name="nearToOriginCheckBox"/>
                        </item>
                       </layout>
                      </item>
@@ -542,6 +532,33 @@
                        </item>
                        <item row="3" column="1">
                         <widget class="QLineEdit" name="p2YLineEdit"/>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QGroupBox" name="groupBox_8">
+                  <property name="title">
+                   <string>GroupBox</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_20">
+                   <item row="0" column="0">
+                    <layout class="QGridLayout" name="gridLayout_19">
+                     <item row="0" column="0">
+                      <layout class="QFormLayout" name="formLayout_10">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="safeZHeightLabel_2">
+                         <property name="text">
+                          <string>Safe Z Height</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QLineEdit" name="safeZHeightLineEdit_2"/>
                        </item>
                       </layout>
                      </item>

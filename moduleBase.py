@@ -7,6 +7,7 @@ Created on Sun Jan 26 20:33:02 2014
 from PyQt4 import QtGui, QtCore
 from utilities import utilities
 from gMotion import gMotion
+import numpy as np
 
 class moduleBase():
     '''
@@ -29,7 +30,25 @@ class moduleBase():
         self.modUtil.setAllLineEditValidator2Double()
         self.loadModuleEntries()
         self.loadSetupHTML()
+        self._findClimbConventionalCheckboxes()
         
+    def _findClimbConventionalCheckboxes(self):
+        try:
+            self._conventionalCutObject = self.util.returnChildrenDictionary(\
+                QtGui.QCheckBox,searchString = 'conventionalCut').values()[0]
+            self._climbCutObject = self.util.returnChildrenDictionary(\
+                QtGui.QCheckBox,searchString = 'climbCut').values()[0]
+        except:
+            self._conventionalCutObject = None
+            self._climbCutObject = None
+
+    def _getLineEditFloats(self,name):
+        try:
+            value = float(self._lineEdits[name].text())
+        except:
+            value = 0.0
+        return value
+    
     def loadSetupHTML(self):
         try:
             with open(self.name+'_Setup.htm','r') as htmlFile:
@@ -78,21 +97,21 @@ class moduleBase():
         motion = gMotion(Table_Offset=Table_Offset, parent = self)
         gcode = ''
         gcode = motion.addPreamble()
-        safeZHeight          = float(self._lineEdits['safeZHeight'].text())
+        safeZHeight          = self._getLineEditFloats('safeZHeight')
         homePosition = [float(self.parent._machineSettings['bedXLengthLineEdit']),float(self.parent._machineSettings['bedYLengthLineEdit']),safeZHeight]
         if self.name == 'Jointer':
-            distFromOrigin          = float(self._lineEdits['distFromOrigin'].text())
-            materialLength          = float(self._lineEdits['materialLength'].text())
-            materialThickness       = float(self._lineEdits['materialThickness'].text())
-            cutOffset               = float(self._lineEdits['cutOffset'].text())
-            zAxisOffset             = float(self._lineEdits['zAxisOffset'].text())
-            toolDiameter            = float(self._lineEdits['toolDiameter'].text())
-            overTravel              = float(self._lineEdits['overTravel'].text())
-            cutPassFeedRate         = float(self._lineEdits['cutPassFeedRate'].text())
-            cutPassSpindleSpeed     = float(self._lineEdits['cutPassSpindleSpeed'].text())
-            finalPassFeedRate       = float(self._lineEdits['finalPassFeedRate'].text())
-            finalPassSpindleSpeed   = float(self._lineEdits['finalPassSpindleSpeed'].text())
-            finalOffset             = float(self._lineEdits['finalOffset'].text())
+            distFromOrigin          = self._getLineEditFloats('distFromOrigin')
+            materialLength          = self._getLineEditFloats('materialLength')
+            materialThickness       = self._getLineEditFloats('materialThickness')
+            cutOffset               = self._getLineEditFloats('cutOffset')
+            zAxisOffset             = self._getLineEditFloats('zAxisOffset')
+            toolDiameter            = self._getLineEditFloats('toolDiameter')
+            overTravel              = self._getLineEditFloats('overTravel')
+            cutPassFeedRate         = self._getLineEditFloats('cutPassFeedRate')
+            cutPassSpindleSpeed     = self._getLineEditFloats('cutPassSpindleSpeed')
+            finalPassFeedRate       = self._getLineEditFloats('finalPassFeedRate')
+            finalPassSpindleSpeed   = self._getLineEditFloats('finalPassSpindleSpeed')
+            finalOffset             = self._getLineEditFloats('finalOffset')
             cutPasses               = int(self._spinBoxes['cutPasses'].text())
             finalPasses             = int(self._spinBoxes['finalPasses'].text())
             selectXYAxis            = int(self._comboBoxes['selectXYAxis'].currentIndex())
@@ -144,6 +163,28 @@ class moduleBase():
             
             
             return (gcode,setupGCode)
+            
+        if self.name == 'StraightRip':
+            climbVal = self._climbCutObject.isChecked()
+            conventionalVal = self._conventionalCutObject.isChecked()
+            nearToOrigin = self._checkBoxes['nearToOrigin'].isChecked()
+            p1 = np.asarray([self._getLineEditFloats('p1X'), self._getLineEditFloats('p1Y')])
+            p2 = np.asarray([self._getLineEditFloats('p2X'), self._getLineEditFloats('p2Y')])
+            if climbVal == False and conventionalVal == False:
+                # In this mode, it goes from pt 1 to pt 2 without regard to climb or conventional
+                forwardDirection = True
+            else:
+                # In this mode, conventional cut is forward if far from origin
+                crossProduct = np.cross(p1,p2)
+                if crossProduct >= 0.0:
+                    forwardDirection = True
+                else:
+                    forwardDirection = False
+                if climbVal:
+                    forwardDirection = not(forwardDirection)
+                if nearToOrigin:
+                    forwardDirection = not(forwardDirection)
+            print forwardDirection
             
             
         else:
