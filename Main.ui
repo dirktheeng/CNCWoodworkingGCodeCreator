@@ -442,7 +442,7 @@
                 <item row="0" column="2">
                  <widget class="QGroupBox" name="groupBox_4">
                   <property name="title">
-                   <string>Operation Properties</string>
+                   <string>Cut Vector</string>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_13">
                    <item row="0" column="1">
@@ -453,34 +453,59 @@
                         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
                        </property>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="climbCutLabel">
+                        <widget class="QLabel" name="rightSideOfVectorLabel">
                          <property name="text">
-                          <string>Climb Cut</string>
+                          <string>Right Side of Vector</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="1">
-                        <widget class="QCheckBox" name="climbCutCheckBox"/>
+                        <widget class="QCheckBox" name="rightSideOfVectorCheckBox">
+                         <property name="checked">
+                          <bool>true</bool>
+                         </property>
+                         <attribute name="buttonGroup">
+                          <string notr="true">StraightRipVectorButtonGroup</string>
+                         </attribute>
+                        </widget>
                        </item>
                        <item row="1" column="0">
-                        <widget class="QLabel" name="conventionalCutLabel">
+                        <widget class="QLabel" name="leftSideOfVectorLabel">
                          <property name="text">
-                          <string>Conventional Cut</string>
+                          <string>Left Side of Vector</string>
                          </property>
                         </widget>
                        </item>
                        <item row="1" column="1">
-                        <widget class="QCheckBox" name="conventionalCutCheckBox"/>
+                        <widget class="QCheckBox" name="leftSideOfVectorCheckBox">
+                         <attribute name="buttonGroup">
+                          <string notr="true">StraightRipVectorButtonGroup</string>
+                         </attribute>
+                        </widget>
                        </item>
                        <item row="2" column="0">
-                        <widget class="QLabel" name="nearToOriginLabel">
+                        <widget class="QLabel" name="onVectorLabel">
                          <property name="text">
-                          <string>Near To Origin</string>
+                          <string>On Vector</string>
                          </property>
                         </widget>
                        </item>
                        <item row="2" column="1">
-                        <widget class="QCheckBox" name="nearToOriginCheckBox"/>
+                        <widget class="QCheckBox" name="onVectorCheckBox">
+                         <attribute name="buttonGroup">
+                          <string notr="true">StraightRipVectorButtonGroup</string>
+                         </attribute>
+                        </widget>
+                       </item>
+                       <item row="3" column="0">
+                        <widget class="QLabel" name="cutReverseDirectionLabel">
+                         <property name="text">
+                          <string>Cut Reverse Direction</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="1">
+                        <widget class="QCheckBox" name="cutReverseDirectionCheckBox"/>
                        </item>
                       </layout>
                      </item>
@@ -559,6 +584,16 @@
                        </item>
                        <item row="0" column="1">
                         <widget class="QLineEdit" name="safeZHeightLineEdit_2"/>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="overTravelLabel_2">
+                         <property name="text">
+                          <string>Over Travel</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QLineEdit" name="overTravelLineEdit_2"/>
                        </item>
                       </layout>
                      </item>
@@ -791,4 +826,7 @@
    </hints>
   </connection>
  </connections>
+ <buttongroups>
+  <buttongroup name="StraightRipVectorButtonGroup"/>
+ </buttongroups>
 </ui>

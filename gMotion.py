@@ -7,6 +7,7 @@ Created on Sun Jan 26 20:07:19 2014
 
 import datetime
 from utilities import utilities
+import numpy as np
 
 class gMotion():
     '''
@@ -116,6 +117,33 @@ class gMotion():
     def turnSpindleOff(self):
         return self._spindleOff + self._new_line
         
+    def calcUnitVector(self,vect):
+        vect = np.asarray(vect)
+        mag = np.sqrt(vect.dot(vect))
+        unitVect = vect/mag
+        return unitVect
+        
+    def calcVectorMag(self,vect):
+        vect = np.asarray(vect)
+        mag = np.sqrt(vect.dot(vect))
+        return mag
+        
+    def calc2DRotateVect(self,vect,radians):
+        vect = np.atleast_2d(vect).T
+        rotArray = np.array([[np.cos(radians), -np.sin(radians)],[np.sin(radians),np.cos(radians)]])
+        rotVect = rotArray.dot(vect).ravel()
+        return rotVect
+        
+    def degToRad(self,deg):
+        rad = deg/360.0*2.0*np.pi
+        return rad
+        
+    def checkLineContainsOrigin(self,p1,p2):
+        if np.cross(p1,p2) == 0:
+            return True
+        else:
+            return False
+        
     def __translateXYZ(self,XYZ):
         '''
         This function translates the xyz coordinates for all movement functions
@@ -150,5 +178,4 @@ class gMotion():
         codes an int or double z cordinate (Z) into gcode format
         '''
         return self._z + str(Z)
-        
         

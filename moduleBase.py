@@ -168,27 +168,45 @@ class moduleBase():
             return (gcode,setupGCode)
             
         if self.name == 'StraightRip':
-            climbVal = self._climbCutObject.isChecked()
-            conventionalVal = self._conventionalCutObject.isChecked()
-            nearToOrigin = self._checkBoxes['nearToOrigin'].isChecked()
             p1 = np.asarray([self._getLineEditFloats('p1X'), self._getLineEditFloats('p1Y')])
             p2 = np.asarray([self._getLineEditFloats('p2X'), self._getLineEditFloats('p2Y')])
-            if climbVal == False and conventionalVal == False:
-                # In this mode, it goes from pt 1 to pt 2 without regard to climb or conventional
-                forwardDirection = True
+            toolDiameter = self._getLineEditFloats('toolDiameter')
+            overTravel = self._getLineEditFloats('overTravel')
+            cutReverseDirection = self._checkBoxes['cutReverseDirection'].isChecked()
+            if cutReverseDirection:
+                travelVector = p1-p2
+                p0 = p2
             else:
-                # In this mode, conventional cut is forward if far from origin
-                crossProduct = np.cross(p1,p2)
-                if crossProduct >= 0.0:
-                    forwardDirection = True
-                else:
-                    forwardDirection = False
-                if climbVal:
-                    forwardDirection = not(forwardDirection)
-                if nearToOrigin:
-                    forwardDirection = not(forwardDirection)
-            print forwardDirection
+                travelVector = p2-p1
+                p0 = p1
+                
+            travelUnitVector = motion.calcUnitVector(travelVector)
+            travelVectorMag = motion.calcVectorMag(travelVector)
+            
+            if self._checkBoxes['rightSideOfVector'].isChecked():
+                bitOffsetRotation = -np.pi/2.0
+            elif self._checkBoxes['leftSideOfVector'].isChecked():
+                bitOffsetRotation = np.pi/2.0
+            else:
+                bitOffsetRotation = None
+                
+            if bitOffsetRotation != None and cutReverseDirection:
+                bitOffsetRotation = -bitOffsetRotation
+                
+            if bitOffsetRotation == None:
+                bitOffsetVect = np.array([0,0])
+            else:
+                bitOffsetVect = motion.calc2DRotateVect(travelUnitVector,bitOffsetRotation)*toolDiameter
+            
+            startPoint = p0-travelUnitVector*overTravel + bitOffsetVect
+            totalMag = travelVectorMag + 2.0 * overTravel
+            endPoint = startPoint + totalMag*travelUnitVector
+            print p1, p2
+            print startPoint, endPoint
+            
             
             
         else:
             return None
+            
+            
