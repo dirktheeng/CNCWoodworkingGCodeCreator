@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1031</width>
-    <height>592</height>
+    <height>699</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -331,9 +331,9 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab_StraightRip">
+        <widget class="QWidget" name="tab_StraightCut">
          <attribute name="title">
-          <string>Straight Rip</string>
+          <string>Straight Cut</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
@@ -346,7 +346,7 @@
               <item row="1" column="1">
                <widget class="QGroupBox" name="groupBox_5">
                 <property name="title">
-                 <string>GroupBox</string>
+                 <string>Material Properties</string>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_15">
                  <item row="0" column="0">
@@ -356,26 +356,6 @@
                      <property name="fieldGrowthPolicy">
                       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
                      </property>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="materialLengthLabel_2">
-                       <property name="text">
-                        <string>Material Length</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <widget class="QLineEdit" name="materialLengthLineEdit_2"/>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="materialWidthLabel_2">
-                       <property name="text">
-                        <string>Material Width</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QLineEdit" name="materialWidthLineEdit_2"/>
-                     </item>
                      <item row="2" column="0">
                       <widget class="QLabel" name="materialThicknessLabel_2">
                        <property name="text">
@@ -385,6 +365,26 @@
                      </item>
                      <item row="2" column="1">
                       <widget class="QLineEdit" name="materialThicknessLineEdit_2"/>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="materialYDimensionLabel">
+                       <property name="text">
+                        <string>Material Y Dimension</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLineEdit" name="materialYDimensionLineEdit"/>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="materialXDimensionLabel">
+                       <property name="text">
+                        <string>Material X Dimension</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLineEdit" name="materialXDimensionLineEdit"/>
                      </item>
                     </layout>
                    </item>
@@ -565,49 +565,12 @@
                   </layout>
                  </widget>
                 </item>
-                <item row="0" column="0">
-                 <widget class="QGroupBox" name="groupBox_8">
-                  <property name="title">
-                   <string>GroupBox</string>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_20">
-                   <item row="0" column="0">
-                    <layout class="QGridLayout" name="gridLayout_19">
-                     <item row="0" column="0">
-                      <layout class="QFormLayout" name="formLayout_10">
-                       <item row="0" column="0">
-                        <widget class="QLabel" name="safeZHeightLabel_2">
-                         <property name="text">
-                          <string>Safe Z Height</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="1">
-                        <widget class="QLineEdit" name="safeZHeightLineEdit_2"/>
-                       </item>
-                       <item row="1" column="0">
-                        <widget class="QLabel" name="overTravelLabel_2">
-                         <property name="text">
-                          <string>Over Travel</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="1">
-                        <widget class="QLineEdit" name="overTravelLineEdit_2"/>
-                       </item>
-                      </layout>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
                </layout>
               </item>
               <item row="1" column="2">
                <widget class="QGroupBox" name="groupBox_6">
                 <property name="title">
-                 <string>GroupBox</string>
+                 <string>Tool Properties</string>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_17">
                  <item row="0" column="0">
@@ -652,6 +615,179 @@
                </widget>
               </item>
              </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QGridLayout" name="gridLayout_25">
+            <item row="0" column="0">
+             <widget class="QGroupBox" name="groupBox_8">
+              <property name="title">
+               <string>Operation Properties</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_20">
+               <item row="0" column="0">
+                <layout class="QGridLayout" name="gridLayout_19">
+                 <item row="0" column="0">
+                  <layout class="QFormLayout" name="formLayout_10">
+                   <property name="fieldGrowthPolicy">
+                    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                   </property>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="safeZHeightLabel_2">
+                     <property name="text">
+                      <string>Safe Z Height</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QLineEdit" name="safeZHeightLineEdit_2"/>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="overTravelLabel_2">
+                     <property name="text">
+                      <string>Over Travel</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QLineEdit" name="overTravelLineEdit_2"/>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="zAxisOffsetLabel">
+                     <property name="text">
+                      <string>Z Axis Offset</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="QLineEdit" name="zAxisOffsetLineEdit"/>
+                   </item>
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="horizontalNibbleLabel">
+                     <property name="text">
+                      <string>Horizontal Nibble</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="QCheckBox" name="horizontalNibbleCheckBox"/>
+                   </item>
+                   <item row="4" column="0">
+                    <widget class="QLabel" name="horizontalNibbleOffsetLabel">
+                     <property name="text">
+                      <string>Horizontal Nibble Offset</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
+                    <widget class="QLineEdit" name="horizontalNibbleOffsetLineEdit"/>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+               <item row="0" column="2">
+                <layout class="QGridLayout" name="gridLayout_22">
+                 <item row="0" column="0">
+                  <layout class="QFormLayout" name="formLayout_12">
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="finalPassesLabel_2">
+                     <property name="text">
+                      <string>Final Passes</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QSpinBox" name="finalPassesSpinBox_2"/>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="finalOffsetLabel_2">
+                     <property name="text">
+                      <string>Final Offset</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QLineEdit" name="finalOffsetLineEdit_2"/>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="finalPassSpindleSpeedLabel_2">
+                     <property name="text">
+                      <string>Final Pass Spindle Speed</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="QLineEdit" name="finalPassSpindleSpeedLineEdit_2"/>
+                   </item>
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="finalPassFeedRateLabel_2">
+                     <property name="text">
+                      <string>Final Pass Feed Rate</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="QLineEdit" name="finalPassFeedRateLineEdit_2"/>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+               <item row="0" column="1">
+                <layout class="QGridLayout" name="gridLayout_21">
+                 <item row="0" column="0">
+                  <layout class="QFormLayout" name="formLayout_11">
+                   <property name="fieldGrowthPolicy">
+                    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                   </property>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="cutPassesLabel_2">
+                     <property name="text">
+                      <string>Cut Passes</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QSpinBox" name="cutPassesSpinBox_2"/>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="cutOffsetLabel_2">
+                     <property name="text">
+                      <string>Cut Offset</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QLineEdit" name="cutOffsetLineEdit_2"/>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="cutPassSpindleSpeedLabel_2">
+                     <property name="text">
+                      <string>Cut Pass Spindle Speed</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="QLineEdit" name="cutPassSpindleSpeedLineEdit_2"/>
+                   </item>
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="cutPassFeedRateLabel_2">
+                     <property name="text">
+                      <string>Cut Pass Feed Rate</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="QLineEdit" name="cutPassFeedRateLineEdit_2"/>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
             </item>
            </layout>
           </item>

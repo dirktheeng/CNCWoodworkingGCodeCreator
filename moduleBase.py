@@ -48,6 +48,15 @@ class moduleBase():
         except:
             value = 0.0
         return value
+        
+    def _getSpinBoxInt(self,name):
+        return int(self._spinBoxes[name].text())
+        
+    def _getComboBoxIndexInt(self,name):
+        return int(self._comboBoxes[name].currentIndex())
+        
+    def _getCheckBoxVal(self,name):
+        return self._checkBoxes[name].isChecked()
     
     def loadSetupHTML(self):
         try:
@@ -103,18 +112,18 @@ class moduleBase():
             distFromOrigin          = self._getLineEditFloats('distFromOrigin')
             materialLength          = self._getLineEditFloats('materialLength')
             materialThickness       = self._getLineEditFloats('materialThickness')
-            cutOffset               = self._getLineEditFloats('cutOffset')
             zAxisOffset             = self._getLineEditFloats('zAxisOffset')
             toolDiameter            = self._getLineEditFloats('toolDiameter')
             overTravel              = self._getLineEditFloats('overTravel')
+            cutOffset               = self._getLineEditFloats('cutOffset')
             cutPassFeedRate         = self._getLineEditFloats('cutPassFeedRate')
             cutPassSpindleSpeed     = self._getLineEditFloats('cutPassSpindleSpeed')
             finalPassFeedRate       = self._getLineEditFloats('finalPassFeedRate')
             finalPassSpindleSpeed   = self._getLineEditFloats('finalPassSpindleSpeed')
             finalOffset             = self._getLineEditFloats('finalOffset')
-            cutPasses               = int(self._spinBoxes['cutPasses'].text())
-            finalPasses             = int(self._spinBoxes['finalPasses'].text())
-            selectXYAxis            = int(self._comboBoxes['selectXYAxis'].currentIndex())
+            cutPasses               = self._getSpinBoxInt('cutPasses')
+            finalPasses             = self._getSpinBoxInt('finalPasses')
+            selectXYAxis            = self._getComboBoxIndexInt('selectXYAxis')
             startAxiDist            = distFromOrigin + materialLength + overTravel
             finishAxiDist           = distFromOrigin - overTravel
             firstCutPass = True
@@ -134,7 +143,7 @@ class moduleBase():
                         gcode += motion.addFeedandSpeed(feedrate = cutPassFeedRate, speed = cutPassSpindleSpeed)
                         gcode += motion.turnSpindleOn()
                         firstCutPass = False
-                    spindleOn = True
+                        spindleOn = True
                     gcode += motion.rapid(startXYZ_cut,safeZ = safeZHeight)
                     gcode += motion.lineFeed(endXYZ_cut)
             gcode += motion.addFeedandSpeed(feedrate = finalPassFeedRate, speed = finalPassSpindleSpeed)
@@ -167,12 +176,25 @@ class moduleBase():
             
             return (gcode,setupGCode)
             
-        if self.name == 'StraightRip':
+        if self.name == 'StraightCut':
+            origin = np.asarray([self._getLineEditFloats('xOrigin'), self._getLineEditFloats('yOrigin')])
             p1 = np.asarray([self._getLineEditFloats('p1X'), self._getLineEditFloats('p1Y')])
             p2 = np.asarray([self._getLineEditFloats('p2X'), self._getLineEditFloats('p2Y')])
-            toolDiameter = self._getLineEditFloats('toolDiameter')
-            overTravel = self._getLineEditFloats('overTravel')
-            cutReverseDirection = self._checkBoxes['cutReverseDirection'].isChecked()
+            materialThickness       = self._getLineEditFloats('materialThickness')
+            toolDiameter            = self._getLineEditFloats('toolDiameter')
+            overTravel              = self._getLineEditFloats('overTravel')
+            zAxisOffset             = self._getLineEditFloats('zAxisOffset')
+            cutOffset               = self._getLineEditFloats('cutOffset')
+            cutPassFeedRate         = self._getLineEditFloats('cutPassFeedRate')
+            cutPassSpindleSpeed     = self._getLineEditFloats('cutPassSpindleSpeed')
+            finalPassFeedRate       = self._getLineEditFloats('finalPassFeedRate')
+            finalPassSpindleSpeed   = self._getLineEditFloats('finalPassSpindleSpeed')
+            finalOffset             = self._getLineEditFloats('finalOffset')
+            horizontalNibbleOffset  = self._getLineEditFloats('horizontalNibbleOffset')
+            cutPasses               = self._getSpinBoxInt('cutPasses')
+            finalPasses             = self._getSpinBoxInt('finalPasses')
+            cutReverseDirection     = self._getCheckBoxVal('cutReverseDirection')
+            horizontalNibble        = self._getCheckBoxVal('horizontalNibble')
             if cutReverseDirection:
                 travelVector = p1-p2
                 p0 = p2
@@ -198,14 +220,66 @@ class moduleBase():
             else:
                 bitOffsetVect = motion.calc2DRotateVect(travelUnitVector,bitOffsetRotation)*toolDiameter
             
-            startPoint = p0-travelUnitVector*overTravel + bitOffsetVect
+            if self._checkBoxes['onVector'].isChecked:
+                hrizOffsetUnitVect = np.array([0,0])
+            else:
+                hrizOffsetUnitVect = motion.calcUnitVector(bitOffsetVect)
+            
+            startPoint = p0-travelUnitVector*overTravel + bitOffsetVect + origin
             totalMag = travelVectorMag + 2.0 * overTravel
             endPoint = startPoint + totalMag*travelUnitVector
-            print p1, p2
-            print startPoint, endPoint
+
+            
+            spindlOn = False            
+            firstCutPass = True
+            if horizontalNibble:
+                pass
+            else:
+                if cutPasses > 0:
+                    startCutXY = startPoint + hrizOffsetUnitVect * cutOffset
+                    endCutXY = endPoint + hrizOffsetUnitVect * cutOffset
+                    cutPassDZ = (materialThickness -  zAxisOffset)/ (cutPasses)
+                    startXYZ_cut = [startCutXY[0],startCutXY[1],zAxisOffset]
+                    endXYZ_cut = [endCutXY[0],endCutXY[1],zAxisOffset]
+                    for i in range(cutPasses):
+                        zCutHeight = materialThickness - cutPassDZ*(i+1)
+                        startXYZ_cut[2] = zCutHeight
+                        endXYZ_cut[2] = zCutHeight
+                        if firstCutPass:
+                            gcode += motion.addFeedandSpeed(feedrate = cutPassFeedRate, speed = cutPassSpindleSpeed)
+                            gcode += motion.turnSpindleOn()
+                            firstCutPass = False
+                            spindleOn = True
+                        gcode += motion.rapid(startXYZ_cut,safeZ = safeZHeight)
+                        gcode += motion.lineFeed(endXYZ_cut)
+            gcode += motion.addFeedandSpeed(feedrate = finalPassFeedRate, speed = finalPassSpindleSpeed)
+            
+            if spindleOn == False:
+                gcode += motion.turnSpindleOn()
+                spindleOn = True
+            
+            startFinalXY = startPoint + hrizOffsetUnitVect * finalOffset
+            endFinalXY = endPoint + hrizOffsetUnitVect * finalOffset
+            
+            startXYZ_final = [startFinalXY[0],startFinalXY[1],zAxisOffset]
+            endXYZ_final = [endFinalXY[0],endFinalXY[1],zAxisOffset]
             
             
+            for i in range(int(finalPasses)):
+                gcode += motion.rapid(startXYZ_final,safeZ = safeZHeight)
+                gcode += motion.lineFeed(endXYZ_final)
             
+            gcode += motion.turnSpindleOff()
+            spindleOn = False
+            gcode += motion.rapid(homePosition,safeZ = safeZHeight)
+            gcode += motion.addPostamble()
+            
+            setupGCode = motion.addPreamble()
+            setupGCode += motion.rapid(startXYZ_final,safeZ = safeZHeight)
+            setupGCode += motion.addPostamble()
+            print gcode
+            
+            return (gcode,setupGCode)
         else:
             return None
             
