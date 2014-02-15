@@ -157,6 +157,22 @@ class gMotion():
     def turnSpindleOff(self):
         return self._spindleOff + self._new_line
         
+    def translatePointOrVect(self,pointOrVect,transVect):
+        for i,component in enumerate(pointOrVect):
+            try:
+                pointOrVect[i] += transVect[i]
+            except:
+                pass
+        return pointOrVect
+        
+    def mergeMinVectorComponents(sefl,V1,V2):
+        for i, comp in enumerate(V1):
+            try:
+                V1[i] = min(comp,V2[i])
+            except:
+                pass
+        return V1
+        
     def calcUnitVector(self,vect):
         vect = np.asarray(vect)
         mag = np.sqrt(vect.dot(vect))

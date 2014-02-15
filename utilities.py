@@ -85,7 +85,7 @@ class utilities():
             return [t.currentIndex() for t in QObjectChildren]
         elif QObject == QtGui.QButtonGroup:
             return [str(t.checkedButton().text()) for t in QObjectChildren]
-        elif QObject == QtGui.QRadioButton:
+        elif QObject == QtGui.QRadioButton or QObject == QtGui.QCheckBox:
             return [t.isChecked() for t in QObjectChildren]
         else:
             return None
@@ -113,6 +113,8 @@ class utilities():
                         self.parent._spinBoxes[fieldName].setValue(float(val))
                     elif key.upper().rfind('RADIOBUTTON') != -1:
                         self.parent._radioButtons[fieldName].setChecked(bool(val))
+                    elif key.upper().rfind('CHECKBOX') != -1:
+                        self.parent._checkBoxes[fieldName].setChecked(val == 'True')
                 except:
                     print 'problem setting ' + fieldName
                 

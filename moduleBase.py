@@ -127,7 +127,9 @@ class moduleBase():
         moduleEntryDict = self.util.getQObjectDict(QtGui.QLineEdit)
         moduleComboDict = self.util.getQObjectDict(QtGui.QComboBox)
         moduleSpinBox = self.util.getQObjectDict(QtGui.QSpinBox)
-        self.moduleDict = dict(moduleEntryDict.items() + moduleComboDict.items() + moduleSpinBox.items())
+        moduleCheckBox = self.util.getQObjectDict(QtGui.QCheckBox)
+        self.moduleDict = dict(moduleEntryDict.items() + moduleComboDict.items() \
+            + moduleSpinBox.items() + moduleCheckBox.items())
         
     def loadModuleEntries(self):
         fileName = self.name+'_ModuleEntries.txt'
@@ -147,10 +149,11 @@ class moduleBase():
         gcode = ''
         gcode = motion.addPreamble()
         safeZHeight          = self._getLineEditFloats('safeZHeight')
-        homePosition = [float(self.parent._machineSettings['bedXLengthLineEdit']),float(self.parent._machineSettings['bedYLengthLineEdit']),safeZHeight]
+        globalHomePosition = [float(self.parent._machineSettings['bedXLengthLineEdit']),float(self.parent._machineSettings['bedYLengthLineEdit']),safeZHeight]
         if self.name == 'Jointer':
             distFromOrigin          = self._getLineEditFloats('distFromOrigin')
             materialLength          = self._getLineEditFloats('materialLength')
+            materialWidth           = self._getLineEditFloats('materialWidth')
             materialThickness       = self._getLineEditFloats('materialThickness')
             zAxisOffset             = self._getLineEditFloats('zAxisOffset')
             toolDiameter            = self._getLineEditFloats('toolDiameter')
@@ -167,6 +170,12 @@ class moduleBase():
             startAxiDist            = distFromOrigin + materialLength + overTravel
             finishAxiDist           = distFromOrigin - overTravel
             firstCutPass = True
+            if selectXYAxis == 0:
+                moduleHome = [materialLength + distFromOrigin + 6,materialWidth + 6,safeZHeight]
+            else:
+                moduleHome = [materialWidth + 6,materialLength + distFromOrigin + 6,safeZHeight]
+                
+            homePosition = motion.mergeMinVectorComponents(globalHomePosition,moduleHome)
             if cutPasses > 0:
                 cutPassDZ = (materialThickness -  zAxisOffset)/ (cutPasses)
                 if selectXYAxis == 0:
@@ -221,6 +230,8 @@ class moduleBase():
             p1 = np.asarray([self._getLineEditFloats('p1X'), self._getLineEditFloats('p1Y')])
             p2 = np.asarray([self._getLineEditFloats('p2X'), self._getLineEditFloats('p2Y')])
             materialThickness       = self._getLineEditFloats('materialThickness')
+            materialXDimension      = self._getLineEditFloats('materialXDimension')
+            materialYDimension      = self._getLineEditFloats('materialYDimension')
             toolDiameter            = self._getLineEditFloats('toolDiameter')
             overTravel              = self._getLineEditFloats('overTravel')
             zAxisOffset             = self._getLineEditFloats('zAxisOffset')
@@ -235,6 +246,9 @@ class moduleBase():
             finalPasses             = self._getSpinBoxInt('finalPasses')
             cutReverseDirection     = self._getCheckBoxVal('cutReverseDirection')
             horizontalNibble        = self._getCheckBoxVal('horizontalNibble')
+            
+            moduleHome = [origin[0] + materialXDimension + 6,origin[1] + materialYDimension + 6,safeZHeight]
+            homePosition = motion.mergeMinVectorComponents(globalHomePosition,moduleHome)
             if cutReverseDirection:
                 travelVector = p1-p2
                 p0 = p2
@@ -260,7 +274,7 @@ class moduleBase():
             else:
                 bitOffsetVect = motion.calc2DRotateVect(travelUnitVector,bitOffsetRotation)*toolDiameter
             
-            if self._checkBoxes['onVector'].isChecked:
+            if self._checkBoxes['onVector'].isChecked():
                 hrizOffsetUnitVect = np.array([0,0])
             else:
                 hrizOffsetUnitVect = motion.calcUnitVector(bitOffsetVect)
@@ -273,18 +287,35 @@ class moduleBase():
             spindlOn = False            
             firstCutPass = True
             if horizontalNibble:
-                pass
+                if cutPasses > 0:
+                    startCutXY = startPoint + hrizOffsetUnitVect * horizontalNibbleOffset
+                    endCutXY = endPoint + hrizOffsetUnitVect * horizontalNibbleOffset
+                    cutPassDXYMag = (cutOffset - horizontalNibbleOffset) / (cutPasses)
+                    cutPassDXY = hrizOffsetUnitVect * cutPassDXYMag
+                    startXYZ_cut = [startCutXY[0],startCutXY[1],zAxisOffset]
+                    endXYZ_cut = [endCutXY[0],endCutXY[1],zAxisOffset]
+                    for i in range(cutPasses+1):
+                        if firstCutPass:
+                            gcode += motion.addFeedandSpeed(feedrate = cutPassFeedRate, speed = cutPassSpindleSpeed)
+                            gcode += motion.turnSpindleOn()
+                            firstCutPass = False
+                            spindleOn = True
+                        gcode += motion.rapid(startXYZ_cut,safeZ = safeZHeight)
+                        gcode += motion.lineFeed(endXYZ_cut)
+                        startXYZ_cut = motion.translatePointOrVect(startXYZ_cut,cutPassDXY)
+                        endXYZ_cut = motion.translatePointOrVect(endXYZ_cut,cutPassDXY)
+                        print startXYZ_cut
             else:
                 if cutPasses > 0:
                     startCutXY = startPoint + hrizOffsetUnitVect * cutOffset
                     endCutXY = endPoint + hrizOffsetUnitVect * cutOffset
                     cutPassDZ = (materialThickness -  zAxisOffset)/ (cutPasses)
-                    startXYZ_cut = [startCutXY[0],startCutXY[1],zAxisOffset]
-                    endXYZ_cut = [endCutXY[0],endCutXY[1],zAxisOffset]
+                    startXYZ_cut = [startCutXY[0],startCutXY[1],materialThickness]
+                    endXYZ_cut = [endCutXY[0],endCutXY[1],materialThickness]
                     for i in range(cutPasses):
-                        zCutHeight = materialThickness - cutPassDZ*(i+1)
-                        startXYZ_cut[2] = zCutHeight
-                        endXYZ_cut[2] = zCutHeight
+                        iterationVect = [0,0,-cutPassDZ]
+                        startXYZ_cut = motion.translatePointOrVect(startXYZ_cut,iterationVect)
+                        endXYZ_cut = motion.translatePointOrVect(endXYZ_cut,iterationVect)
                         if firstCutPass:
                             gcode += motion.addFeedandSpeed(feedrate = cutPassFeedRate, speed = cutPassSpindleSpeed)
                             gcode += motion.turnSpindleOn()
@@ -311,6 +342,7 @@ class moduleBase():
             
             gcode += motion.turnSpindleOff()
             spindleOn = False
+            print homePosition
             gcode += motion.rapid(homePosition,safeZ = safeZHeight)
             gcode += motion.addPostamble()
             

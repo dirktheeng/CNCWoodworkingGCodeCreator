@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Main.ui'
 #
-# Created: Fri Feb 14 21:30:52 2014
+# Created: Sat Feb 15 13:19:13 2014
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -477,9 +477,6 @@ class Ui_MainWindow(object):
         self.cutPassesLabel_2 = QtGui.QLabel(self.groupBox_8)
         self.cutPassesLabel_2.setObjectName(_fromUtf8("cutPassesLabel_2"))
         self.formLayout_11.setWidget(0, QtGui.QFormLayout.LabelRole, self.cutPassesLabel_2)
-        self.cutPassesSpinBox_2 = QtGui.QSpinBox(self.groupBox_8)
-        self.cutPassesSpinBox_2.setObjectName(_fromUtf8("cutPassesSpinBox_2"))
-        self.formLayout_11.setWidget(0, QtGui.QFormLayout.FieldRole, self.cutPassesSpinBox_2)
         self.cutOffsetLabel_2 = QtGui.QLabel(self.groupBox_8)
         self.cutOffsetLabel_2.setObjectName(_fromUtf8("cutOffsetLabel_2"))
         self.formLayout_11.setWidget(1, QtGui.QFormLayout.LabelRole, self.cutOffsetLabel_2)
@@ -498,6 +495,9 @@ class Ui_MainWindow(object):
         self.cutPassFeedRateLineEdit_2 = QtGui.QLineEdit(self.groupBox_8)
         self.cutPassFeedRateLineEdit_2.setObjectName(_fromUtf8("cutPassFeedRateLineEdit_2"))
         self.formLayout_11.setWidget(3, QtGui.QFormLayout.FieldRole, self.cutPassFeedRateLineEdit_2)
+        self.cutPassesSpinBox_2 = QtGui.QSpinBox(self.groupBox_8)
+        self.cutPassesSpinBox_2.setObjectName(_fromUtf8("cutPassesSpinBox_2"))
+        self.formLayout_11.setWidget(0, QtGui.QFormLayout.FieldRole, self.cutPassesSpinBox_2)
         self.gridLayout_21.addLayout(self.formLayout_11, 0, 0, 1, 1)
         self.gridLayout_20.addLayout(self.gridLayout_21, 0, 1, 1, 1)
         self.gridLayout_25.addWidget(self.groupBox_8, 0, 0, 1, 1)
@@ -565,6 +565,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.moduleTabWidget.setCurrentIndex(1)
         QtCore.QObject.connect(self.actionExit, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.close)
+        QtCore.QObject.connect(MainWindow, QtCore.SIGNAL(_fromUtf8("destroyed()")), MainWindow.close)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.selectXYAxisComboBox, self.overTravelLineEdit)
         MainWindow.setTabOrder(self.overTravelLineEdit, self.safeZHeightLineEdit)

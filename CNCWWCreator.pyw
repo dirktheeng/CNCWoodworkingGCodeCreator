@@ -85,6 +85,7 @@ class CNCWWCreator(QtGui.QMainWindow):
         for mod in self._moduleList:
             self._moduleDict[mod] = moduleBase(mod,parent = self)
         self.connectActions()
+        self.horizontalNibbleChecks()
          
     def connectActions(self):
         """
@@ -92,7 +93,6 @@ class CNCWWCreator(QtGui.QMainWindow):
         """
         self.ui.actionMachine.triggered.connect(self.machineSettinsDialog)
         self.ui.actionGrid.triggered.connect(self.gridSettinsDialog)
-        self.ui.actionExit.triggered.connect(self.mainQuit)
         self.ui.generateGCode_pushButton.clicked.connect(self.onGenerateGCodePressed)
         self.ui.actionPostamble.triggered.connect(self.postDialog)
         self.ui.actionPreamble.triggered.connect(self.preDialog)
@@ -107,7 +107,20 @@ class CNCWWCreator(QtGui.QMainWindow):
             if v._climbCutObject != None:
                 v._climbCutObject.clicked.connect(self.climbCheck)
                 v._conventionalCutObject.clicked.connect(self.conventionalCheck)
+        self._moduleDict['StraightCut']._checkBoxes['horizontalNibble'].clicked.connect(self.horizontalNibbleChecks)
         
+        
+    def horizontalNibbleChecks(self):
+        hNibbleVal = self._moduleDict['StraightCut']._getCheckBoxVal('horizontalNibble')
+        if self._moduleDict['StraightCut']._getCheckBoxVal('onVector'):
+            QtGui.QMessageBox.warning(self,'Settings Conflict','Horizontal Nibble cannot be used with On Vector')
+            hNibbleVal = False
+            self._moduleDict['StraightCut']._checkBoxes['horizontalNibble'].setChecked(False)
+        if hNibbleVal:
+            self._moduleDict['StraightCut']._spinBoxes['cutPasses'].setMinimum(1)
+        else:
+            self._moduleDict['StraightCut']._spinBoxes['cutPasses'].setMinimum(0)
+            
         
     def climbCheck(self):
         currentModuleName = self.util.getCurrentModuleName()
@@ -141,8 +154,6 @@ class CNCWWCreator(QtGui.QMainWindow):
         '''
         enstantiates an instance of the set origin from grid dialog and calls the gui
         '''
-#        currentModuleIndex = self.ui.moduleTabWidget.currentIndex()
-#        currentModule = str(self.ui.moduleTabWidget.tabText(currentModuleIndex)).replace(' ','')
         currentModule = self.util.getCurrentModuleName()
         setOriginFromGrid = setOriginFromGridDialog(parent = self, currentModule = currentModule)
         setOriginFromGrid.exec_()
@@ -168,13 +179,13 @@ class CNCWWCreator(QtGui.QMainWindow):
         prePostDialog = prePostAmbleDialog("Preamble",parent = self)
         prePostDialog.exec_()
         
-    def mainQuit(self):
+    def closeEvent(self,event):
         '''
         handles actions on exit
         '''
         for k,v in self._moduleDict.items():
+            print 'Saving ' +k+ ' Module Entries'
             v.saveModuleEntries()
-        sys.exit(app.exec_())
         
     def liabilityDialog(self):
         liabilityDialog = liabilityWaversDialog(parent = self)
@@ -196,4 +207,7 @@ if __name__=='__main__':
     app = QtGui.QApplication(sys.argv)
     mainapp = CNCWWCreator()
     mainapp.show()
-    sys.exit(app.exec_())
+    try:
+        sys.exit(app.exec_())
+    except:
+        pass
