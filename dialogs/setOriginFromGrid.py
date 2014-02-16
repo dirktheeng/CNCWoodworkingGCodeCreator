@@ -44,17 +44,18 @@ Payment arrangements can be made by contacting the copyright holder by email at
 dirktheeng@gmail.com
 
 """
-from PyQt4 import QtGui, QtCore
-from setOriginFromGridDialog import Ui_setOriginFromGrid
-from utilities import utilities
+from utilities.QtWrapper import QtGui, QtCore, QtLoadUI, variant
+from utilities.utilities import utilities
 
 class setOriginFromGridDialog(QtGui.QDialog):
     def __init__(self,parent=None, currentModule = None):
         self.currentModule = currentModule
         self.parent = parent
         QtGui.QDialog.__init__(self,parent)
-        self.ui = Ui_setOriginFromGrid()
-        self.ui.setupUi(self)
+        
+         # load ui file
+        self.ui = QtLoadUI('./uiFiles/setOriginFromGridDialog.ui', self)
+        
         self.util = utilities(parent = self)
         if self.currentModule != None:
             self.moduleUtil = utilities(parent = self.parent._moduleDict[currentModule])

@@ -44,16 +44,24 @@ Payment arrangements can be made by contacting the copyright holder by email at
 dirktheeng@gmail.com
 
 """
-from PyQt4 import QtGui, QtCore
-from liabilityWaverDialog import Ui_liabilityWaver
-from utilities import utilities
+from utilities.QtWrapper import QtGui, QtCore, QtLoadUI, variant
+from utilities.utilities import utilities
 
-class liabilityWaversDialog(QtGui.QDialog):
+class machineSettingsDialog(QtGui.QDialog):
     def __init__(self,parent=None):
         self.parent = parent
         QtGui.QDialog.__init__(self,parent)
-        self.ui = Ui_liabilityWaver()
-        self.ui.setupUi(self)
+        
+        # load ui file
+        self.ui = QtLoadUI('./uiFiles/machineSettingsDialog.ui', self)
+        
+        self.util =utilities(parent = self)
+        self._lineEdits = self.util.returnChildrenDictionary(QtGui.QLineEdit)
+        self._spinBoxes = self.util.returnChildrenDictionary(QtGui.QSpinBox)
+        self._checkBoxes = self.util.returnChildrenDictionary(QtGui.QCheckBox)
+        self._comboBoxes = self.util.returnChildrenDictionary(QtGui.QComboBox)
+        self.util.setAllLineEditValidator2Double()
+        self.util.populateInfo('machineSettings.txt')
         self.connectActions()
 
     def connectActions(self):
@@ -63,4 +71,5 @@ class liabilityWaversDialog(QtGui.QDialog):
         self.ui.buttonBox.accepted.connect(self.onOKButton)
         
     def onOKButton(self):
-        self.parent._liabilityQuit = False
+        self.util.dumpSettings('machineSettings.txt')
+        self.parent._machineSettings = self.util.getQObjectDict(QtGui.QLineEdit)
