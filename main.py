@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Main.ui'
 #
-# Created: Sat Feb 15 13:19:13 2014
+# Created: Sat Feb 15 20:12:31 2014
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -447,6 +447,7 @@ class Ui_MainWindow(object):
         self.finalPassesLabel_2.setObjectName(_fromUtf8("finalPassesLabel_2"))
         self.formLayout_12.setWidget(0, QtGui.QFormLayout.LabelRole, self.finalPassesLabel_2)
         self.finalPassesSpinBox_2 = QtGui.QSpinBox(self.groupBox_8)
+        self.finalPassesSpinBox_2.setMinimum(1)
         self.finalPassesSpinBox_2.setObjectName(_fromUtf8("finalPassesSpinBox_2"))
         self.formLayout_12.setWidget(0, QtGui.QFormLayout.FieldRole, self.finalPassesSpinBox_2)
         self.finalOffsetLabel_2 = QtGui.QLabel(self.groupBox_8)
@@ -563,9 +564,8 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuTools.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.moduleTabWidget.setCurrentIndex(1)
+        self.moduleTabWidget.setCurrentIndex(0)
         QtCore.QObject.connect(self.actionExit, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.close)
-        QtCore.QObject.connect(MainWindow, QtCore.SIGNAL(_fromUtf8("destroyed()")), MainWindow.close)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.selectXYAxisComboBox, self.overTravelLineEdit)
         MainWindow.setTabOrder(self.overTravelLineEdit, self.safeZHeightLineEdit)
