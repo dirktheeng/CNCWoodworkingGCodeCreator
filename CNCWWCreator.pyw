@@ -45,27 +45,36 @@ dirktheeng@gmail.com
 
 """
 
-import sys, os, csv, json
-from PyQt4 import QtGui, QtCore
-from main import Ui_MainWindow
-from utilities import utilities
-from machineSettings import machineSettingsDialog
-from gridSettings import gridSettingsDialog
-from prepostamble import prePostAmbleDialog
-from liabilityWaver import liabilityWaversDialog
-from setOriginFromGrid import setOriginFromGridDialog
-from moduleBase import moduleBase
+# Core Imports
+import sys, os #, csv, json
 
+# Get this file path, make sure it is in the python path for the imports to work
+# if the project is outside of python's site-packages
+sys.path.append(os.path.dirname(sys.argv[0]))
+
+# import qt warapper
+from utilities.QtWrapper import QtGui, QtCore, QtLoadUI, variant
+
+# import custom libraries
+from utilities.utilities import utilities
+from dialogs.machineSettings import machineSettingsDialog
+from dialogs.gridSettings import gridSettingsDialog
+from dialogs.prepostamble import prePostAmbleDialog
+from dialogs.liabilityWaver import liabilityWaversDialog
+from dialogs.setOriginFromGrid import setOriginFromGridDialog
+from utilities.moduleBase import moduleBase
 
 class CNCWWCreator(QtGui.QMainWindow):
     '''
-    The is the main program class
+    This is the main program class
     '''
     def __init__(self,parent=None):
-        self.util = utilities(parent = self)
         QtGui.QWidget.__init__(self,parent)
-        self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
+        # Load uifile
+        self.ui = QtLoadUI('./uiFiles/Main.ui', self)
+        
+        self.util = utilities(parent = self)
+        
         self._liabilityQuit = True
         self.liabilityDialog()
         if self._liabilityQuit:
@@ -76,7 +85,8 @@ class CNCWWCreator(QtGui.QMainWindow):
         self._moduleList = []
         self._origin = [0,0]
         self._moduleDict = {}
-        for i in range(1000):
+        
+        for i in range(self.ui.moduleTabWidget.count()):
             mName = str(self.ui.moduleTabWidget.tabText(i))
             if mName == '':
                 break
@@ -84,6 +94,7 @@ class CNCWWCreator(QtGui.QMainWindow):
                 self._moduleList.append(mName.replace(' ',''))
         for mod in self._moduleList:
             self._moduleDict[mod] = moduleBase(mod,parent = self)
+        
         self.connectActions()
         self.horizontalNibbleChecks()
          
