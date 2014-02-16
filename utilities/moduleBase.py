@@ -272,7 +272,7 @@ class moduleBase():
             if bitOffsetRotation == None:
                 bitOffsetVect = np.array([0,0])
             else:
-                bitOffsetVect = motion.calc2DRotateVect(travelUnitVector,bitOffsetRotation)*toolDiameter
+                bitOffsetVect = motion.calc2DRotateVect(travelUnitVector,bitOffsetRotation)*toolDiameter/2
             
             if self._checkBoxes['onVector'].isChecked():
                 hrizOffsetUnitVect = np.array([0,0])
@@ -300,11 +300,10 @@ class moduleBase():
                             gcode += motion.turnSpindleOn()
                             firstCutPass = False
                             spindleOn = True
-                        gcode += motion.rapid(startXYZ_cut,safeZ = safeZHeight)
-                        gcode += motion.lineFeed(endXYZ_cut)
+                        gcode += motion.rapid(startXYZ_cut,safeZ = safeZHeight, translateXYZ = False)
+                        gcode += motion.lineFeed(endXYZ_cut, translateXYZ = False)
                         startXYZ_cut = motion.translatePointOrVect(startXYZ_cut,cutPassDXY)
                         endXYZ_cut = motion.translatePointOrVect(endXYZ_cut,cutPassDXY)
-                        print startXYZ_cut
             else:
                 if cutPasses > 0:
                     startCutXY = startPoint + hrizOffsetUnitVect * cutOffset
@@ -315,14 +314,15 @@ class moduleBase():
                     for i in range(cutPasses):
                         iterationVect = [0,0,-cutPassDZ]
                         startXYZ_cut = motion.translatePointOrVect(startXYZ_cut,iterationVect)
+                        print startXYZ_cut
                         endXYZ_cut = motion.translatePointOrVect(endXYZ_cut,iterationVect)
                         if firstCutPass:
                             gcode += motion.addFeedandSpeed(feedrate = cutPassFeedRate, speed = cutPassSpindleSpeed)
                             gcode += motion.turnSpindleOn()
                             firstCutPass = False
                             spindleOn = True
-                        gcode += motion.rapid(startXYZ_cut,safeZ = safeZHeight)
-                        gcode += motion.lineFeed(endXYZ_cut)
+                        gcode += motion.rapid(startXYZ_cut,safeZ = safeZHeight, translateXYZ = False)
+                        gcode += motion.lineFeed(endXYZ_cut, translateXYZ = False)
             gcode += motion.addFeedandSpeed(feedrate = finalPassFeedRate, speed = finalPassSpindleSpeed)
             
             if spindleOn == False:
@@ -337,17 +337,16 @@ class moduleBase():
             
             
             for i in range(int(finalPasses)):
-                gcode += motion.rapid(startXYZ_final,safeZ = safeZHeight)
-                gcode += motion.lineFeed(endXYZ_final)
+                gcode += motion.rapid(startXYZ_final,safeZ = safeZHeight, translateXYZ = False)
+                gcode += motion.lineFeed(endXYZ_final, translateXYZ = False)
             
             gcode += motion.turnSpindleOff()
             spindleOn = False
-            print homePosition
-            gcode += motion.rapid(homePosition,safeZ = safeZHeight)
+            gcode += motion.rapid(homePosition,safeZ = safeZHeight, translateXYZ = False)
             gcode += motion.addPostamble()
             
             setupGCode = motion.addPreamble()
-            setupGCode += motion.rapid(startXYZ_final,safeZ = safeZHeight)
+            setupGCode += motion.rapid(startXYZ_final,safeZ = safeZHeight, translateXYZ = False)
             setupGCode += motion.addPostamble()
             print gcode
             

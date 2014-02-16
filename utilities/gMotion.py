@@ -82,7 +82,7 @@ class gMotion():
         self._spindleOnCCW = 'M04'
         self._spindleOff = 'M05'
     
-    def rapid(self,XYZ,safeZ = None):
+    def rapid(self,XYZ,safeZ = None, translateXYZ = True):
         '''
         accepts a list or tuple (items can be int or double) of x, y, z
         coordinates (XYZ) and an optional safe Z height (safeZ, int double or str).  
@@ -93,7 +93,8 @@ class gMotion():
         
         It is HIGHLY recommended that safeZ is specified
         '''
-        XYZ = self.__translateXYZ(XYZ)
+        if translateXYZ:
+            XYZ = self.__translateXYZ(XYZ)
 
         if safeZ == None:
             return self._g_rapid + self.__codeXYZ(XYZ) + self._new_line
@@ -121,8 +122,9 @@ class gMotion():
         gcode += '(End Postamble)' + self._new_line
         return gcode
         
-    def lineFeed(self,XYZ,feedrate = None,speed = None):
-        XYZ = self.__translateXYZ(XYZ)
+    def lineFeed(self,XYZ,feedrate = None,speed = None, translateXYZ = True):
+        if translateXYZ:
+            XYZ = self.__translateXYZ(XYZ)
         gcode = self._g_feed + self.__codeXYZ(XYZ)
         if feedrate != None:
             gcode += self._feed + str(feedrate)
