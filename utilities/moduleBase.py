@@ -44,7 +44,7 @@ Payment arrangements can be made by contacting the copyright holder by email at
 dirktheeng@gmail.com
  
 """
-from PyQt4 import QtGui, QtCore
+from QtWrapper import QtGui, QtCore, QtLoadUI, variant
 from utilities import utilities
 from gMotion import gMotion
 import numpy as np

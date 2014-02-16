@@ -2,7 +2,7 @@
 """
 Created on Sun Jan 26 20:27:46 2014
 
-@author: Dirk
+@author: Dirk Van Essendelft
 
 The product of this software is text files which contain gcode that may or may 
 not be suitable to use with CNC machines and equipment. If gcode is not suitable 
@@ -44,22 +44,24 @@ Payment arrangements can be made by contacting the copyright holder by email at
 dirktheeng@gmail.com
 
 """
-from PyQt4 import QtGui, QtCore
-from prepostambleDialog import Ui_prePostDialog
-from utilities import utilities
+from utilities.QtWrapper import QtGui, QtCore, QtLoadUI, variant
+from utilities.utilities import utilities
 
-class prePostAmbleDialog(QtGui.QDialog):
-    def __init__(self, prepostName, parent = None):
+class gridSettingsDialog(QtGui.QDialog):
+    def __init__(self,parent=None):
         self.parent = parent
-        self.prepostName = prepostName
         QtGui.QDialog.__init__(self,parent)
-        self.ui = Ui_prePostDialog()
-        self.ui.setupUi(self)
-        self.setWindowTitle(prepostName)
-        self.util = utilities()
+        self.ui = QtLoadUI('./uiFiles/gridSettingsDialog.ui', self)
+
+        self.util = utilities(parent = self)
+        self._lineEdits = self.util.returnChildrenDictionary(QtGui.QLineEdit)
+        self._spinBoxes = self.util.returnChildrenDictionary(QtGui.QSpinBox)
+        self._checkBoxes = self.util.returnChildrenDictionary(QtGui.QCheckBox)
+        self._comboBoxes = self.util.returnChildrenDictionary(QtGui.QComboBox)
+        self.util.setAllLineEditValidator2Double()
+        self.util.populateInfo('gridSettings.txt')
         self.connectActions()
-        self.util.loadTextEdit(self.prepostName+'.txt',self.ui.prePostTextEdit)
-        
+
     def connectActions(self):
         """
         Connect the user interface controls to the logic
@@ -67,4 +69,5 @@ class prePostAmbleDialog(QtGui.QDialog):
         self.ui.buttonBox.accepted.connect(self.onOKButton)
         
     def onOKButton(self):
-        self.util.dumpTextEdit(self.prepostName+'.txt',self.ui.prePostTextEdit)
+        self.util.dumpSettings('gridSettings.txt')
+        self.parent._gridSettings = self.util.getQObjectDict(QtGui.QLineEdit)
